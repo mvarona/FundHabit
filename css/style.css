@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: 'Hind', 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	margin-top: 2%;
+}
+
+h1 {
+	font-size: 4em;
+	font-weight: 300;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 2em;
+	font-weight: 400;
+}
+
+h2 a {
+	color: black;
+}
+
+hr {
+	width: 95%;
+	border: solid .5px #aaa;
+	margin-top: 1%;
+}
+
+#instructions {
+	display: inline-block;
+	font-size: 1.3em;
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
+
+#instructions div {
+	display: inline-block;
+	margin-right: 5%;
+	margin-bottom: 1%;
+}
+
+#instructions div:last-block {
+	margin-right: 0;
+}
+
+#instructions p {
+	margin-top: 1%;
+	font-size: .9em;
+}
