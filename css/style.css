@@ -13,7 +13,6 @@ html, body {
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: 95%;
 }
 
 header {
@@ -68,8 +67,10 @@ section {
 	text-align: justify;
 	margin-top: 2%;
 	width: 80%;
-	margin-left: 4%;
-	margin-right: 4%;
+	padding-left: 4%;
+	padding-right: 4%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 section div.circle {
@@ -96,13 +97,72 @@ section span#base {
 	margin-top: 2%;
 }
 
+section .not_linear_info{
+	margin-left: 2%;
+}
+
+section input#txt_not_linear {
+	width: 48%;
+	font-size: 1.5em;
+	padding-left: 1%;
+	padding-right: 1%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+section canvas#graph-incentives{
+	margin-left: 2%;
+	float: right;
+}
+
+section div.fund-wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+section div.fund {
+	display: inline-block;
+	width: 20em;
+	height: 20em;
+	border-radius: 100%;
+	border: solid 2px #aaa;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+section div.fund:hover {
+	cursor: pointer;
+}
+
+section div.fund#fail {
+	background-color: rgb(220,50,70);
+	border-color: rgb(200,30,50);
+	left: 0;
+	margin-left: 0;
+}
+
+section div.fund#success {
+	background-color: rgb(70,200,50);
+	border-color: rgb(50,180,30);
+	right: 0;
+	margin-left: 5%;
+}
+
 footer {
 	display: block;
 	width: 100%;
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	height: 5%;
 	z-index: 10;
+	background-color: rgba(255,255,255,.9);
+}
+
+footer hr {
+	margin-top: .5%;
+	margin-bottom: .5%;
 }
 
 footer.alert {
