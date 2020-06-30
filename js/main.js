@@ -8,6 +8,8 @@ $(document).ready(function() {
 	$relativeVariations = $placeholderVariations;
 	$labelsXAxes = generateLabelsXAxes($relativeVariations);
 	$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
+	$failValue = 4.55;
+	$successValue = 2.32;
 
 	function generateLabelsXAxes(nameArray){
 		labels = [];
@@ -71,6 +73,37 @@ $(document).ready(function() {
 	    $('#not_linear').attr("checked", false);
 	    $('.not_linear_info').hide();
 	    $('#txt_not_linear').attr("placeholder", $notLinearPlaceholder);
+
+	    $greaterValue = $failValue > $successValue ? $failValue : $successValue;
+	    $ratio = 1;
+	    $standardSize = 20;
+
+	    if ($greaterValue == $failValue){
+	    	$ratio = $successValue / $failValue;
+	    }
+
+	    if ($greaterValue == $failValue){
+	    	$ratio = $successValue / $failValue;
+	    	setTimeout(function(){
+	    		$('div.fund span.guide, div.fund span.state').html("");
+	    		$('div.fund#success').css("width", $standardSize * $ratio + "em");
+		    	$('div.fund#success').css("height", $standardSize * $ratio + "em");
+		    	$('div.fund#fail').css("width", $standardSize * (1 + $ratio) + "em");
+		    	$('div.fund#fail').css("height", $standardSize * (1 + $ratio) + "em");
+	    	}, 300);
+	    
+	    } 
+
+	    if ($greaterValue == $successValue){
+	    	$ratio = $failValue / $successValue;
+	    	setTimeout(function(){
+	    		$('div.fund span.guide, div.fund span.state').html("");
+	    		$('div.fund#fail').css("width", $standardSize * $ratio + "em");
+		    	$('div.fund#fail').css("height", $standardSize * $ratio + "em");
+		    	$('div.fund#success').css("width", $standardSize * (1 + $ratio) + "em");
+		    	$('div.fund#success').css("height", $standardSize * (1 + $ratio) + "em");
+	    	}, 300); 
+	    }
 	}
 
 	function saveData() {
@@ -93,16 +126,24 @@ $(document).ready(function() {
 		}
 	});
 
-	$('div.fund#fail').hover(function() {
+	$('div.fund#fail, div.fund#fail span.amount').mouseenter(function() {
 		$('div.fund#success span.guide').css("color", "rgb(70,200,50)");
 		$('div.fund#fail span.guide').css("color", "black");
-		$('div.fund span.guide').toggle();
+		$('div.fund span.guide').show();
 	});
 
-	$('div.fund#success').hover(function() {
+	$('div.fund#success, div.fund#success span.amount').mouseenter(function() {
 		$('div.fund#fail span.guide').css("color", "rgb(220,50,70)");
 		$('div.fund#success span.guide').css("color", "black");
-		$('div.fund span.guide').toggle();
+		$('div.fund span.guide').show();
+	});
+
+	$('div.fund#fail').mouseout(function() {
+		$('div.fund span.guide').hide();
+	});
+
+	$('div.fund#success').mouseout(function() {
+		$('div.fund span.guide').hide();
 	});
 
 	$('div.fund#fail').click(function() {
