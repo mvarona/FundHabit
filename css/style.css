@@ -168,6 +168,10 @@ section div.fund span.amount {
 	color: black!important;
 }
 
+section div.fund span.name {
+	display: block!important;
+}
+
 section div.fund:hover {
 	cursor: pointer;
 }

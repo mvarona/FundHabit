@@ -8,8 +8,13 @@ $(document).ready(function() {
 	$relativeVariations = $placeholderVariations;
 	$labelsXAxes = generateLabelsXAxes($relativeVariations);
 	$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
-	$failValue = 4.55;
+	$failValue = 4.32;
 	$successValue = 2.32;
+	$lastAction = "";
+	$FAIL = "FAIL";
+	$SUCCESS = "SUCCESS";
+
+	$datesLogged = [];
 
 	function generateLabelsXAxes(nameArray){
 		labels = [];
@@ -77,40 +82,103 @@ $(document).ready(function() {
 	    $greaterValue = $failValue > $successValue ? $failValue : $successValue;
 	    $ratio = 1;
 	    $standardSize = 20;
+	    $fontSize = 3;
 
 	    if ($greaterValue == $failValue){
 	    	$ratio = $successValue / $failValue;
 	    }
 
-	    if ($greaterValue == $failValue){
+	    if ($failValue != $successValue && $greaterValue == $failValue){
 	    	$ratio = $successValue / $failValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#success').css("width", $standardSize * $ratio + "em");
 		    	$('div.fund#success').css("height", $standardSize * $ratio + "em");
+		    	$('div.fund#success span.amount').css("font-size", $fontSize * $ratio + "em");
 		    	$('div.fund#fail').css("width", $standardSize * (1 + $ratio) + "em");
 		    	$('div.fund#fail').css("height", $standardSize * (1 + $ratio) + "em");
+		    	$('div.fund#fail span.amount').css("font-size", $fontSize * (1 + $ratio) + "em");
 	    	}, 300);
 	    
-	    } 
-
-	    if ($greaterValue == $successValue){
+	    } else if ($failValue != $successValue && $greaterValue == $successValue){
 	    	$ratio = $failValue / $successValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", $standardSize * $ratio + "em");
 		    	$('div.fund#fail').css("height", $standardSize * $ratio + "em");
+		    	$('div.fund#fail span.amount').css("font-size", $fontSize * $ratio + "em");
 		    	$('div.fund#success').css("width", $standardSize * (1 + $ratio) + "em");
 		    	$('div.fund#success').css("height", $standardSize * (1 + $ratio) + "em");
+		    	$('div.fund#success span.amount').css("font-size", $fontSize * (1 + $ratio) + "em");
 	    	}, 300); 
 	    }
+
+	    $('div.fund#fail span.amount').html(Math.round(($failValue) * 100) / 100);
+	    $('div.fund#success span.amount').html(Math.round(($successValue) * 100) / 100);
 	}
+
+	$('div.fund#fail').click(function(){
+		$today = moment().format('DD-MM-YYYY');
+		if (!$datesLogged.includes($today)){
+			$datesLogged.push($today);
+			$numDay = $datesLogged.length - 1;
+			$failValue += $absoluteVariations[$numDay];
+			$successValue -= $absoluteVariations[$numDay];
+			$lastAction = $FAIL;
+			loadUI();
+			saveData();
+		} else {
+			if ($datesLogged.includes($today) && $lastAction == $SUCCESS){
+				$numDay = $datesLogged.length - 1;
+				$failValue += $absoluteVariations[$numDay];
+				$successValue -= $absoluteVariations[$numDay];
+				$lastAction = "";
+				$index = $datesLogged.indexOf($today);
+				if ($index !== -1) $datesLogged.splice($index, 1);
+				loadUI();
+				saveData();
+			} else {
+				showError("Action already registered");
+			}
+		}
+	});
+
+	$('div.fund#success').click(function(){
+		$today = moment().format('DD-MM-YYYY');
+		if (!$datesLogged.includes($today)){
+			$datesLogged.push($today);
+			$numDay = $datesLogged.length - 1;
+			$failValue -= $absoluteVariations[$numDay];
+			$successValue += $absoluteVariations[$numDay];
+			$lastAction = $SUCCESS;
+			loadUI();
+			saveData();
+		} else {
+			if ($datesLogged.includes($today) && $lastAction == $FAIL){
+				$numDay = $datesLogged.length - 1;
+				$failValue -= $absoluteVariations[$numDay];
+				$successValue += $absoluteVariations[$numDay];
+				$lastAction = "";
+				$index = $datesLogged.indexOf($today);
+				if ($index !== -1) $datesLogged.splice($index, 1);
+				loadUI();
+				saveData();
+			} else {
+				showError("Action already registered");
+			}
+		}
+	});
 
 	function saveData() {
 		if ($('#graph-wrapper').is(':visible')){
 			generateGraph();
 		}
 		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
+	}
+
+	function showError($msg) {
+		$('footer.alert p').html($msg);
+		$('footer.alert').slideToggle(500).delay(1500).slideToggle(500);
 	}
     
     $("#help").click(function() {
