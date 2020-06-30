@@ -1,11 +1,13 @@
 $(document).ready(function() {
 
+	$notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
+	$linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
+
 	$base = parseFloat($('input#base').attr("value"));
-	$placeholderVariations = $('input#txt_not_linear').attr("placeholder").split(" ").map(Number);
+	$placeholderVariations = $linearPlaceholder.split(" ").map(Number);
 	$relativeVariations = $placeholderVariations;
 	$labelsXAxes = generateLabelsXAxes($relativeVariations);
 	$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
-	console.log($absoluteVariations);
 
 	function generateLabelsXAxes(nameArray){
 		labels = [];
@@ -30,7 +32,7 @@ $(document).ready(function() {
 		return absoluteVariations;
 	}
 
-	function generateData() {
+	function generateGraph() {
 		var ctx = document.getElementById('graph_incentives').getContext('2d');
 		var myChart = new Chart(ctx, {
 		    type: 'line',
@@ -59,20 +61,22 @@ $(document).ready(function() {
 			}
 			
 		});
+		$('#span_incentives').html("If you keep the habit for more than " + $absoluteVariations.length + " days, you will be earning " + Math.max.apply(Math, $absoluteVariations) + " (fictial) money per day!")
 	}
 
 	function loadUI() {
 		$('#instructions').hide();
-	    $('#graph_incentives').hide();
-
-		generateData();
-
+		generateGraph();
 	    $('#linear').attr("checked", true);
 	    $('#not_linear').attr("checked", false);
 	    $('.not_linear_info').hide();
+	    $('#txt_not_linear').attr("placeholder", $notLinearPlaceholder);
 	}
 
 	function saveData() {
+		if ($('#graph-wrapper').is(':visible')){
+			generateGraph();
+		}
 		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
 	}
     
@@ -81,20 +85,67 @@ $(document).ready(function() {
 	});
 
 	$("#show-graph").click(function() {
-	    $('#graph_incentives').slideToggle();
+		$('#graph-wrapper').slideToggle();
+		if ($('#graph-wrapper').is(':visible')){
+			setTimeout(function(){
+				generateGraph();
+			}, 200);
+		}
+	});
+
+	$('div.fund#fail').hover(function() {
+		$('div.fund#success span.guide').css("color", "rgb(70,200,50)");
+		$('div.fund#fail span.guide').css("color", "black");
+		$('div.fund span.guide').toggle();
+	});
+
+	$('div.fund#success').hover(function() {
+		$('div.fund#fail span.guide').css("color", "rgb(220,50,70)");
+		$('div.fund#success span.guide').css("color", "black");
+		$('div.fund span.guide').toggle();
+	});
+
+	$('div.fund#fail').click(function() {
+		$('div.fund span.guide').hide();
+		$('div.fund#success span.state').css("color", "rgb(70,200,50)");
+		$('div.fund#fail span.state').css("color", "black");
+		$('div.fund span.state').fadeIn();
+		setTimeout(function(){
+			$('div.fund span.state').fadeOut();
+		}, 1000);
+	});
+
+	$('div.fund#success').click(function() {
+		$('div.fund span.guide').hide();
+		$('div.fund#fail span.state').css("color", "rgb(220,50,70)");
+		$('div.fund#success span.state').css("color", "black");
+		$('div.fund span.state').fadeIn();
+		setTimeout(function(){
+			$('div.fund span.state').fadeOut();
+		}, 1000);
 	});
 
 	$('input#base').change(function() {
+		$base = parseFloat($('input#base').attr("value"));
+		$labelsXAxes = generateLabelsXAxes($relativeVariations);
+		$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
 		saveData();
 	})
 
 	$("input[name='increment_type']").change(function() {
 		if (this.value == 'linear'){
 			$('.not_linear_info').hide();
+			$placeholderVariations = $linearPlaceholder.split(" ").map(Number);
+			$relativeVariations = $placeholderVariations;
 		}
 		if (this.value == 'not_linear'){
 			$('.not_linear_info').show();
+			$placeholderVariations = $notLinearPlaceholder.split(" ").map(Number);
+			$relativeVariations = $placeholderVariations;
 		}
+
+		$labelsXAxes = generateLabelsXAxes($relativeVariations);
+		$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
 
 		saveData();
 	})

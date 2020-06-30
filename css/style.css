@@ -26,9 +26,15 @@ h1 {
 }
 
 h2 {
-	margin-top: -1%;
+	margin-top: -.2%;
 	font-size: 2em;
 	font-weight: 400;
+}
+
+#coffe {
+	position: absolute;
+	top: 5px;
+	right: 5px;
 }
 
 h2 a {
@@ -103,12 +109,16 @@ section .not_linear_info{
 }
 
 section input#txt_not_linear {
-	width: 48%;
+	width: 53%;
 	font-size: 1.5em;
 	padding-left: 1%;
 	padding-right: 1%;
 	margin-top: 1%;
 	margin-bottom: 1%;
+}
+
+section div#graph-wrapper {
+	display: none;
 }
 
 section canvas#graph_incentives{
@@ -132,6 +142,29 @@ section div.fund {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
+}
+
+section div.fund span {
+	display: inline-block;
+	position: relative;
+}
+
+section div.fund span {
+	margin-bottom: 10%;
+	display: none;
+}
+
+
+section div.fund span.amount {
+	display: block!important;
+	font-size: 3em;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 100%;
+	margin-top: 25%;
+	position: relative!important;
+	color: black!important;
 }
 
 section div.fund:hover {
