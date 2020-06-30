@@ -50,14 +50,15 @@
 		<div class='circle'>
 			<input id='base' value='0.50'></input>
 		</div>
-		<canvas id="graph-incentives" width="200" height="200"></canvas>
+		<canvas id="graph_incentives"></canvas>
 		<br/><br/>
-		<input type='radio' name='increment_type' id='linear'></input>
+		<input type='radio' name='increment_type' id='linear' value='linear'></input>
 		<label for='linear'>Linear (all days count the same)</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type='radio' name='increment_type' id='not_linear'></input>
-		<label for='not_linear'>Not linear (each day counts what you decide)</label>
+		<input type='radio' name='increment_type' id='not_linear' value='not_linear'></input>
+		<label for='not_linear'>Not linear (each day counts what you decide)</label>&nbsp;&nbsp;&nbsp;&nbsp;<a id="show-graph" href='javascript:void(0)'>How much will I earn / lose each day</a>
 		<br/>
 		<label class='not_linear_info'>Input the variation for each day in percentage (we recommend higher values at the beginning and at the end of, for example, a 14 days streak):</label>
+
 		<br/>
 		<input type='text' class='not_linear_info' id='txt_not_linear' placeholder='25 25 25 25 15 15 15 15 20 20 45 45 45 45 50'/>
 		<br/>

@@ -26,6 +26,7 @@ h1 {
 }
 
 h2 {
+	margin-top: -1%;
 	font-size: 2em;
 	font-weight: 400;
 }
@@ -110,9 +111,10 @@ section input#txt_not_linear {
 	margin-bottom: 1%;
 }
 
-section canvas#graph-incentives{
-	margin-left: 2%;
-	float: right;
+section canvas#graph_incentives{
+	height: 400px!important;
+	margin-top: 2%;
+	display: none;
 }
 
 section div.fund-wrapper {
@@ -170,7 +172,6 @@ footer.alert {
 	color: white;
 	background-color: rgb(220,50,70);
 	width: 100%;
-	position: absolute;
 	bottom: 0;
 	height: 5%;
 	z-index: 100;
@@ -183,7 +184,6 @@ footer.ok {
 	color: white;
 	background-color: rgb(70,200,50);
 	width: 100%;
-	position: absolute;
 	bottom: 0;
 	height: 5%;
 	z-index: 100;
