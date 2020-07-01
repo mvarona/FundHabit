@@ -1,14 +1,10 @@
 $(document).ready(function() {
 
-	var FundHabit = {}; // Namespace
+	var FundHabit = {}; // Namespace for variables
+	var FundHabitData = {}; // Namespace for variables that need to be stored on cookies
 
 	FundHabit.url = window.location.href;
 	FundHabit.fileName = FundHabit.url.substr(FundHabit.url.lastIndexOf('/') + 1);
-	FundHabit.lan = "EN";
-
-	if (FundHabit.fileName.includes("ES")) {
-	   FundHabit.lan = "ES";
-	}
 
 	// Strings for localization:
 
@@ -20,44 +16,62 @@ $(document).ready(function() {
 	FundHabit.actionAlreadyRegisteredString = {EN: "Action already registered", ES: "Acción ya registrada"};
 	FundHabit.changesSavedString = {EN: "Changes saved successfully", ES: "Cambios guardados correctamente"};
 	FundHabit.noCookiesToCleanString = {EN: "There aren't cookies to clean, reload the page to create them again", ES: "No hay cookies que eliminar, recarga la página para volver a crearlas"};
-	FundHabit.cookiesDeleted = {EN: "Cookies successfully deleted. Reload the page to start from scratch", ES: "Cookies eliminadas correctamente. Recarga la página para empezar de cero"};
+	FundHabit.cookiesDeletedString = {EN: "Cookies successfully deleted. Reload the page to start from scratch", ES: "Cookies eliminadas correctamente. Recarga la página para empezar de cero"};
+	FundHabit.baseMustBePositiveString = {EN: "The base amount must be a positive number", ES: "La cantidad base debe ser un número positivo"};
+
+	// Default values:
+
+	FundHabit.notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
+	FundHabit.linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
+	FundHabitData.base = "0.50";
 
 	// Global variables:
 
-	FundHabit.$notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
-	FundHabit.$linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
+	FundHabitData.lan = "EN";
+	FundHabitData.mode = "LINEAR";
 
-	FundHabit.$base = parseFloat($('input#base').attr("value"));
-	FundHabit.$placeholderVariations = FundHabit.$linearPlaceholder.split(" ").map(Number);
-	FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
-	FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
-	FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
-	FundHabit.$failValue = 4.32;
-	FundHabit.$successValue = 2.32;
-	FundHabit.$lastAction = "";
-	FundHabit.$FAIL = "FAIL";
-	FundHabit.$SUCCESS = "SUCCESS";
+	if (FundHabit.fileName.includes("ES")) {
+	   FundHabitData.lan = "ES";
+	}
 
-	FundHabit.$datesLogged = [];
+	if (FundHabitData.mode == FundHabit.LINEAR){
+		FundHabit.variations = FundHabit.linearPlaceholder.split(" ").map(Number);
+	} else {
+		FundHabit.variations = FundHabit.notLinearPlaceholder.split(" ").map(Number);
+	}
 
-	FundHabit.$cookieName = "data1";
+	FundHabitData.base = FundHabit.base;
+	FundHabitData.relativeVariations = FundHabit.variations;
+	FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+	FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
+	FundHabitData.failValue = 0;
+	FundHabitData.successValue = 0;
+	FundHabitData.lastAction = "";
+	FundHabitData.datesLogged = [];
+
+	FundHabit.cookieName = "data1";
+
+	FundHabit.FAIL = "FAIL";
+	FundHabit.SUCCESS = "SUCCESS";
+	FundHabit.LINEAR = "LINEAR";
+	FundHabit.NOT_LINEAR = "NOT_LINEAR";
 
 	// Functions:
 
 	function loadData(){
-		if ($.cookie(FundHabit.$cookieName)) {
-			FundHabit = JSON.parse($.cookie(FundHabit.$cookieName));
+		if ($.cookie(FundHabit.cookieName)) {
+			FundHabitData = JSON.parse($.cookie(FundHabit.cookieName));
 	    } else {
-	        var CookieSet = $.cookie(FundHabit.$cookieName, JSON.stringify(FundHabit));
+	        $.cookie(FundHabit.cookieName, JSON.stringify(FundHabitData));
 	    }
 	}
 
 	function generateLabelsXAxes(nameArray){
 		labels = [];
 		for (i = 0; i < nameArray.length; i++) {
-			labels[i] = FundHabit.dayString[FundHabit.lan] + (i + 1);
+			labels[i] = FundHabit.dayString[FundHabitData.lan] + (i + 1);
 			if (i == nameArray.length - 1){
-				labels[i] = FundHabit.dayString[FundHabit.lan] + (i + 1) + "...";
+				labels[i] = FundHabit.dayString[FundHabitData.lan] + (i + 1) + "...";
 			}
 		}
 		return labels;
@@ -80,10 +94,10 @@ $(document).ready(function() {
 		var myChart = new Chart(ctx, {
 		    type: 'line',
 		    data: {
-		        labels: FundHabit.$labelsXAxes,
+		        labels: FundHabitData.labelsXAxes,
 		        datasets: [{
-		            label: FundHabit.apportationToFundString[FundHabit.lan],
-		            data: FundHabit.$absoluteVariations,
+		            label: FundHabit.apportationToFundString[FundHabitData.lan],
+		            data: FundHabitData.absoluteVariations,
 		            backgroundColor: 'rgba(255, 99, 132, 0.2)'
 		        }]
 		    },
@@ -104,112 +118,123 @@ $(document).ready(function() {
 			}
 			
 		});
-		$('#span_incentives').html(FundHabit.spanIncentives1String[FundHabit.lan] + FundHabit.$absoluteVariations.length + FundHabit.spanIncentives2String[FundHabit.lan] + Math.max.apply(Math, FundHabit.$absoluteVariations) + FundHabit.spanIncentives3String[FundHabit.lan])
+		$('#span_incentives').html(FundHabit.spanIncentives1String[FundHabitData.lan] + FundHabitData.absoluteVariations.length + FundHabit.spanIncentives2String[FundHabitData.lan] + Math.max.apply(Math, FundHabitData.absoluteVariations) + FundHabit.spanIncentives3String[FundHabitData.lan])
 	}
 
 	function loadUI() {
-		$('#instructions').hide();
+
+		if (FundHabitData.datesLogged.length != 0){
+			$('#instructions').hide();
+		}
+		
 		generateGraph();
-	    $('#linear').attr("checked", true);
-	    $('#not_linear').attr("checked", false);
-	    $('.not_linear_info').hide();
-	    $('#txt_not_linear').attr("placeholder", FundHabit.$notLinearPlaceholder);
 
-	    $greaterValue = FundHabit.$failValue > FundHabit.$successValue ? FundHabit.$failValue : FundHabit.$successValue;
-	    $ratio = 1;
-	    $standardSize = 20;
-	    $fontSize = 3;
+		if (FundHabitData.mode == FundHabit.LINEAR){		
+			$('#linear').attr("checked", true);
+		    $('#not_linear').attr("checked", false);
+		    $('.not_linear_info').hide();
+		} else {
+			$('#linear').attr("checked", false);
+		    $('#not_linear').attr("checked", true);
+		    $('.not_linear_info').show();
+		}    
+	    $('#txt_not_linear').attr("placeholder", FundHabit.notLinearPlaceholder);
 
-	    if ($greaterValue == FundHabit.$failValue){
-	    	$ratio = FundHabit.$successValue / FundHabit.$failValue;
+	    greaterValue = FundHabitData.failValue > FundHabitData.successValue ? FundHabitData.failValue : FundHabitData.successValue;
+	    ratio = 1;
+	    standardSize = 20;
+	    fontSize = 3;
+
+	    if (greaterValue == FundHabitData.failValue){
+	    	ratio = FundHabitData.successValue / FundHabitData.failValue;
 	    }
 
-	    if (FundHabit.$failValue != FundHabit.$successValue && $greaterValue == FundHabit.$failValue){
-	    	$ratio = FundHabit.$successValue / FundHabit.$failValue;
+	    if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.failValue){
+	    	ratio = FundHabitData.successValue / FundHabitData.failValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
-	    		$('div.fund#success').css("width", $standardSize * $ratio + "em");
-		    	$('div.fund#success').css("height", $standardSize * $ratio + "em");
-		    	$('div.fund#success span.amount').css("font-size", $fontSize * $ratio + "em");
-		    	$('div.fund#fail').css("width", $standardSize * (1 + $ratio) + "em");
-		    	$('div.fund#fail').css("height", $standardSize * (1 + $ratio) + "em");
-		    	$('div.fund#fail span.amount').css("font-size", $fontSize * (1 + $ratio) + "em");
+	    		$('div.fund#success').css("width", standardSize * ratio + "em");
+		    	$('div.fund#success').css("height", standardSize * ratio + "em");
+		    	$('div.fund#success span.amount').css("font-size", fontSize * ratio + "em");
+		    	$('div.fund#fail').css("width", standardSize * (1 + ratio) + "em");
+		    	$('div.fund#fail').css("height", standardSize * (1 + ratio) + "em");
+		    	$('div.fund#fail span.amount').css("font-size", fontSize * (1 + ratio) + "em");
 	    	}, 300);
 	    
-	    } else if (FundHabit.$failValue != FundHabit.$successValue && $greaterValue == FundHabit.$successValue){
-	    	$ratio = FundHabit.$failValue / FundHabit.$successValue;
+	    } else if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.successValue){
+	    	ratio = FundHabitData.failValue / FundHabitData.successValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
-	    		$('div.fund#fail').css("width", $standardSize * $ratio + "em");
-		    	$('div.fund#fail').css("height", $standardSize * $ratio + "em");
-		    	$('div.fund#fail span.amount').css("font-size", $fontSize * $ratio + "em");
-		    	$('div.fund#success').css("width", $standardSize * (1 + $ratio) + "em");
-		    	$('div.fund#success').css("height", $standardSize * (1 + $ratio) + "em");
-		    	$('div.fund#success span.amount').css("font-size", $fontSize * (1 + $ratio) + "em");
+	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
+		    	$('div.fund#fail').css("height", standardSize * ratio + "em");
+		    	$('div.fund#fail span.amount').css("font-size", fontSize * ratio + "em");
+		    	$('div.fund#success').css("width", standardSize * (1 + ratio) + "em");
+		    	$('div.fund#success').css("height", standardSize * (1 + ratio) + "em");
+		    	$('div.fund#success span.amount').css("font-size", fontSize * (1 + ratio) + "em");
 	    	}, 300); 
 	    }
 
-	    $('div.fund#fail span.amount').html(Math.round((FundHabit.$failValue) * 100) / 100);
-	    $('div.fund#success span.amount').html(Math.round((FundHabit.$successValue) * 100) / 100);
+	    $('div.fund#fail span.amount').html(Math.round((FundHabitData.failValue) * 100) / 100);
+	    $('div.fund#success span.amount').html(Math.round((FundHabitData.successValue) * 100) / 100);
 	}
 
 	$('#clean-cookies').click(function() {
-		if ($.cookie(FundHabit.$cookieName)) {
-			document.cookie = FundHabit.$cookieName + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			showSuccess(FundHabit.cookiesDeleted[FundHabit.lan]);
+		if ($.cookie(FundHabit.cookieName)) {
+			document.cookie = FundHabit.cookieName + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			showSuccess(FundHabit.cookiesDeletedString[FundHabitData.lan]);
 	    } else {
-	        showError(FundHabit.noCookiesToCleanString[FundHabit.lan]);
+	        showError(FundHabit.noCookiesToCleanString[FundHabitData.lan]);
 	    }
 	});
 
 	$('div.fund#fail').click(function(){
-		$today = moment().format('DD-MM-YYYY');
-		if (!FundHabit.$datesLogged.includes($today)){
-			FundHabit.$datesLogged.push($today);
-			$numDay = FundHabit.$datesLogged.length - 1;
-			FundHabit.$failValue += FundHabit.$absoluteVariations[$numDay];
-			FundHabit.$successValue -= FundHabit.$absoluteVariations[$numDay];
-			FundHabit.$lastAction = FundHabit.$FAIL;
+		today = moment().format('DD-MM-YYYY');
+		if (!FundHabitData.datesLogged.includes(today)){
+			FundHabitData.datesLogged.push(today);
+			numDay = FundHabitData.datesLogged.length - 1;
+			FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
+			FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
+			FundHabitData.lastAction = FundHabit.FAIL;
 			loadUI();
 			saveData();
 		} else {
-			if (FundHabit.$datesLogged.includes($today) && FundHabit.$lastAction == FundHabit.$SUCCESS){
-				$numDay = FundHabit.$datesLogged.length - 1;
-				FundHabit.$failValue += FundHabit.$absoluteVariations[$numDay];
-				FundHabit.$successValue -= FundHabit.$absoluteVariations[$numDay];
-				FundHabit.$lastAction = "";
-				$index = FundHabit.$datesLogged.indexOf($today);
-				if ($index !== -1) FundHabit.$datesLogged.splice($index, 1);
+			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.SUCCESS){
+				numDay = FundHabitData.datesLogged.length - 1;
+				FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
+				FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
+				FundHabitData.lastAction = "";
+				index = FundHabitData.datesLogged.indexOf(today);
+				if (index !== -1) FundHabitData.datesLogged.splice(index, 1);
 				loadUI();
 				saveData();
 			} else {
-				showError(FundHabit.actionAlreadyRegisteredString[FundHabit.lan]);
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
 			}
 		}
 	});
 
 	$('div.fund#success').click(function(){
-		$today = moment().format('DD-MM-YYYY');
-		if (!FundHabit.$datesLogged.includes($today)){
-			FundHabit.$datesLogged.push($today);
-			$numDay = FundHabit.$datesLogged.length - 1;
-			FundHabit.$failValue -= FundHabit.$absoluteVariations[$numDay];
-			FundHabit.$successValue += FundHabit.$absoluteVariations[$numDay];
-			FundHabit.$lastAction = FundHabit.$SUCCESS;
+		today = moment().format('DD-MM-YYYY');
+		if (!FundHabitData.datesLogged.includes(today)){
+			FundHabitData.datesLogged.push(today);
+			numDay = FundHabitData.datesLogged.length - 1;
+			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
+			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
+			FundHabitData.lastAction = FundHabit.SUCCESS;
 			loadUI();
 			saveData();
 		} else {
-			if (FundHabit.$datesLogged.includes($today) && FundHabit.$lastAction == FundHabit.$FAIL){
-				$numDay = FundHabit.$datesLogged.length - 1;
-				FundHabit.$failValue -= FundHabit.$absoluteVariations[$numDay];
-				FundHabit.$successValue += FundHabit.$absoluteVariations[$numDay];
-				FundHabit.$lastAction = "";
-				$index = FundHabit.$datesLogged.indexOf($today);
-				if ($index !== -1) FundHabit.$datesLogged.splice($index, 1);
+			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.FAIL){
+				numDay = FundHabitData.datesLogged.length - 1;
+				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
+				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
+				FundHabitData.lastAction = "";
+				index = FundHabitData.datesLogged.indexOf(today);
+				if (index !== -1) FundHabitData.datesLogged.splice(index, 1);
 				loadUI();
 				saveData();
 			} else {
-				showError(FundHabit.actionAlreadyRegisteredString[FundHabit.lan]);
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
 			}
 		}
 	});
@@ -218,16 +243,17 @@ $(document).ready(function() {
 		if ($('#graph-wrapper').is(':visible')){
 			generateGraph();
 		}
-		showSuccess(FundHabit.changesSavedString[FundHabit.lan]);
+		$.cookie(FundHabit.cookieName, JSON.stringify(FundHabitData));
+		showSuccess(FundHabit.changesSavedString[FundHabitData.lan]);
 	}
 
-	function showError($msg) {
-		$('footer.alert p').html($msg);
+	function showError(msg) {
+		$('footer.alert p').html(msg);
 		$('footer.alert').slideToggle(500).delay(1500).slideToggle(500);
 	}
 
-	function showSuccess($msg) {
-		$('footer.ok p').html($msg);
+	function showSuccess(msg) {
+		$('footer.ok p').html(msg);
 		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
 	}
     
@@ -285,26 +311,35 @@ $(document).ready(function() {
 	});
 
 	$('input#base').change(function() {
-		FundHabit.$base = parseFloat($('input#base').attr("value"));
-		FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
-		FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
-		saveData();
+		$('input#base').val($('input#base').val().replace(",", "."));
+
+		if (isNaN($('input#base').val()) || parseFloat($('input#base').val()) <= 0 ){
+			showError(FundHabit.baseMustBePositiveString[FundHabitData.lan]);
+			$('input#base').val("0.50");
+		} else {
+			FundHabitData.base = parseFloat($('input#base').val());
+			FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+			FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
+			saveData();
+		}
 	})
 
 	$("input[name='increment_type']").change(function() {
 		if (this.value == 'linear'){
 			$('.not_linear_info').hide();
-			FundHabit.$placeholderVariations = FundHabit.$linearPlaceholder.split(" ").map(Number);
-			FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
+			FundHabit.variations = FundHabit.linearPlaceholder.split(" ").map(Number);
+			FundHabitData.relativeVariations = FundHabit.variations;
+			FundHabitData.mode = FundHabit.LINEAR;
 		}
 		if (this.value == 'not_linear'){
 			$('.not_linear_info').show();
-			FundHabit.$placeholderVariations = FundHabit.$notLinearPlaceholder.split(" ").map(Number);
-			FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
+			FundHabit.variations = FundHabit.notLinearPlaceholder.split(" ").map(Number);
+			FundHabitData.relativeVariations = FundHabit.variations;
+			FundHabitData.mode = FundHabit.NOT_LINEAR;
 		}
 
-		FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
-		FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
+		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+		FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 
 		saveData();
 	})
