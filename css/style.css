@@ -13,6 +13,32 @@ html, body {
 	margin: 0;
 	padding: 0;
 	width: 100%;
+	height: 100%;
+	margin-top: -.5%;
+}
+
+#content {
+	margin: 0;
+	padding: 0;
+	background: linear-gradient(-75deg, #ffffff, #a2dbf0, #8cd3ec);
+	background-size: 200% 200%;
+	animation: gradient 15s ease 1;
+	transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    z-index: 0;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 0%;
+	}
+	50% {
+		background-position: 100% 100%;
+	}
+	100% {
+		background-position: 0% 0%;
+	}
 }
 
 header {
@@ -22,7 +48,6 @@ header {
 h1 {
 	font-size: 4em;
 	font-weight: 300;
-	font-weight: bold;
 }
 
 h2 {
@@ -37,13 +62,37 @@ h2 {
 	right: 5px;
 }
 
+#github {
+	position: absolute;
+	top: 35px;
+	right: 5px;
+}
+
+#lang {
+	position: absolute;
+	top: 65px;
+	right: 5px;
+}
+
+a {
+	color: black!important;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
 h2 a {
 	color: black;
 }
 
 hr {
 	width: 95%;
-	border: solid .5px #aaa;
+	border: solid .5px #ffffff;
 	margin-top: 1%;
 }
 
@@ -85,7 +134,7 @@ section div.circle {
 	margin-left: 2%;
 	width: 70px;
 	height: 70px;
-	border: solid 1px #aaa;
+	border: solid 1px #ffffff;
 	border-radius: 100%;
 	position: absolute;
 }
@@ -97,6 +146,7 @@ section input#base {
 	text-align: center;
 	margin-left: 5%;
 	margin-top: 28%;
+	background-color: transparent;
 }
 
 section span#base {
@@ -122,7 +172,7 @@ section div#graph-wrapper {
 }
 
 section canvas#graph_incentives{
-	height: 400px!important;
+	height: 500px!important;
 	margin-top: 2%;
 	display: none;
 }
@@ -138,7 +188,7 @@ section div.fund {
 	width: 20em;
 	height: 20em;
 	border-radius: 100%;
-	border: solid 2px #aaa;
+	border: solid 2px #ffffff;
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
@@ -190,6 +240,14 @@ section div.fund#success {
 	margin-left: 5%;
 }
 
+section div.fund#fail:hover {
+	background-color: rgb(255,110,110);
+}
+
+section div.fund#success:hover {
+	background-color: rgb(110,255,110);
+}
+
 footer {
 	display: block;
 	width: 100%;
@@ -200,9 +258,8 @@ footer {
 	background-color: rgba(255,255,255,.9);
 }
 
-footer hr {
-	margin-top: .5%;
-	margin-bottom: .5%;
+footer.cookies p {
+	margin-top: .8%;
 }
 
 footer.alert {
@@ -211,9 +268,9 @@ footer.alert {
 	background-color: rgb(220,50,70);
 	width: 100%;
 	bottom: 0;
-	height: 5%;
+	height: 4.5%;
 	z-index: 100;
-	padding-top: 1%;
+	padding-top: .5%;
 	font-size: 1.1em;
 }
 
@@ -223,8 +280,8 @@ footer.ok {
 	background-color: rgb(70,200,50);
 	width: 100%;
 	bottom: 0;
-	height: 5%;
+	height: 4.5%;
 	z-index: 100;
-	padding-top: 1%;
+	padding-top: .5%;
 	font-size: 1.1em;
 }

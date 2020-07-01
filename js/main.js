@@ -1,27 +1,62 @@
 $(document).ready(function() {
 
-	$notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
-	$linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
+	var FundHabit = {}; // Namespace
 
-	$base = parseFloat($('input#base').attr("value"));
-	$placeholderVariations = $linearPlaceholder.split(" ").map(Number);
-	$relativeVariations = $placeholderVariations;
-	$labelsXAxes = generateLabelsXAxes($relativeVariations);
-	$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
-	$failValue = 4.32;
-	$successValue = 2.32;
-	$lastAction = "";
-	$FAIL = "FAIL";
-	$SUCCESS = "SUCCESS";
+	FundHabit.url = window.location.href;
+	FundHabit.fileName = FundHabit.url.substr(FundHabit.url.lastIndexOf('/') + 1);
+	FundHabit.lan = "EN";
 
-	$datesLogged = [];
+	if (FundHabit.fileName.includes("ES")) {
+	   FundHabit.lan = "ES";
+	}
+
+	// Strings for localization:
+
+	FundHabit.dayString = {EN: "Day ", ES: "Día "};
+	FundHabit.apportationToFundString = {EN: "Apportation to fond", ES: "Aportación al fondo"};
+	FundHabit.spanIncentives1String = {EN: "If you keep the habit for more than ", ES: "¡Si mantienes el hábito durante más de "};
+	FundHabit.spanIncentives2String = {EN: " days, you will be earning ", ES: " días, ganarás "};
+	FundHabit.spanIncentives3String = {EN: " (fictial) money per day!", ES: " de dinero (ficticio) por día!"};
+	FundHabit.actionAlreadyRegisteredString = {EN: "Action already registered", ES: "Acción ya registrada"};
+	FundHabit.changesSavedString = {EN: "Changes saved successfully", ES: "Cambios guardados correctamente"};
+
+	// Global variables:
+
+	FundHabit.$notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
+	FundHabit.$linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
+
+	FundHabit.$base = parseFloat($('input#base').attr("value"));
+	FundHabit.$placeholderVariations = FundHabit.$linearPlaceholder.split(" ").map(Number);
+	FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
+	FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
+	FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
+	FundHabit.$failValue = 4.32;
+	FundHabit.$successValue = 2.32;
+	FundHabit.$lastAction = "";
+	FundHabit.$FAIL = "FAIL";
+	FundHabit.$SUCCESS = "SUCCESS";
+
+	FundHabit.$datesLogged = [];
+
+	// Functions:
+
+	function loadData(){
+		if ($.cookie('data')) {
+			$.cookie('data', FundHabit);
+			console.log($.cookie('data'));
+	    	//FundHabit = $.cookie('data');
+	    	alert(FundHabit.lan);
+	    } else {
+	        var CookieSet = $.cookie('data', FundHabit);
+	    }  
+	}
 
 	function generateLabelsXAxes(nameArray){
 		labels = [];
 		for (i = 0; i < nameArray.length; i++) {
-			labels[i] = "Day " + (i + 1);
+			labels[i] = FundHabit.dayString[FundHabit.lan] + (i + 1);
 			if (i == nameArray.length - 1){
-				labels[i] = "Day " + (i + 1) + "...";
+				labels[i] = FundHabit.dayString[FundHabit.lan] + (i + 1) + "...";
 			}
 		}
 		return labels;
@@ -44,10 +79,10 @@ $(document).ready(function() {
 		var myChart = new Chart(ctx, {
 		    type: 'line',
 		    data: {
-		        labels: $labelsXAxes,
+		        labels: FundHabit.$labelsXAxes,
 		        datasets: [{
-		            label: 'Apportation to fond',
-		            data: $absoluteVariations,
+		            label: FundHabit.apportationToFundString[FundHabit.lan],
+		            data: FundHabit.$absoluteVariations,
 		            backgroundColor: 'rgba(255, 99, 132, 0.2)'
 		        }]
 		    },
@@ -56,7 +91,7 @@ $(document).ready(function() {
 			        yAxes: [{
 			            ticks: {
 			                stepSize: 7,
-				            fontSize: 40
+				            fontSize: 30
 			            }
 			        }],
 			        xAxes: [{
@@ -68,7 +103,7 @@ $(document).ready(function() {
 			}
 			
 		});
-		$('#span_incentives').html("If you keep the habit for more than " + $absoluteVariations.length + " days, you will be earning " + Math.max.apply(Math, $absoluteVariations) + " (fictial) money per day!")
+		$('#span_incentives').html(FundHabit.spanIncentives1String[FundHabit.lan] + FundHabit.$absoluteVariations.length + FundHabit.spanIncentives2String[FundHabit.lan] + Math.max.apply(Math, FundHabit.$absoluteVariations) + FundHabit.spanIncentives3String[FundHabit.lan])
 	}
 
 	function loadUI() {
@@ -77,19 +112,19 @@ $(document).ready(function() {
 	    $('#linear').attr("checked", true);
 	    $('#not_linear').attr("checked", false);
 	    $('.not_linear_info').hide();
-	    $('#txt_not_linear').attr("placeholder", $notLinearPlaceholder);
+	    $('#txt_not_linear').attr("placeholder", FundHabit.$notLinearPlaceholder);
 
-	    $greaterValue = $failValue > $successValue ? $failValue : $successValue;
+	    $greaterValue = FundHabit.$failValue > FundHabit.$successValue ? FundHabit.$failValue : FundHabit.$successValue;
 	    $ratio = 1;
 	    $standardSize = 20;
 	    $fontSize = 3;
 
-	    if ($greaterValue == $failValue){
-	    	$ratio = $successValue / $failValue;
+	    if ($greaterValue == FundHabit.$failValue){
+	    	$ratio = FundHabit.$successValue / FundHabit.$failValue;
 	    }
 
-	    if ($failValue != $successValue && $greaterValue == $failValue){
-	    	$ratio = $successValue / $failValue;
+	    if (FundHabit.$failValue != FundHabit.$successValue && $greaterValue == FundHabit.$failValue){
+	    	$ratio = FundHabit.$successValue / FundHabit.$failValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#success').css("width", $standardSize * $ratio + "em");
@@ -100,8 +135,8 @@ $(document).ready(function() {
 		    	$('div.fund#fail span.amount').css("font-size", $fontSize * (1 + $ratio) + "em");
 	    	}, 300);
 	    
-	    } else if ($failValue != $successValue && $greaterValue == $successValue){
-	    	$ratio = $failValue / $successValue;
+	    } else if (FundHabit.$failValue != FundHabit.$successValue && $greaterValue == FundHabit.$successValue){
+	    	$ratio = FundHabit.$failValue / FundHabit.$successValue;
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", $standardSize * $ratio + "em");
@@ -113,58 +148,58 @@ $(document).ready(function() {
 	    	}, 300); 
 	    }
 
-	    $('div.fund#fail span.amount').html(Math.round(($failValue) * 100) / 100);
-	    $('div.fund#success span.amount').html(Math.round(($successValue) * 100) / 100);
+	    $('div.fund#fail span.amount').html(Math.round((FundHabit.$failValue) * 100) / 100);
+	    $('div.fund#success span.amount').html(Math.round((FundHabit.$successValue) * 100) / 100);
 	}
 
 	$('div.fund#fail').click(function(){
 		$today = moment().format('DD-MM-YYYY');
-		if (!$datesLogged.includes($today)){
-			$datesLogged.push($today);
-			$numDay = $datesLogged.length - 1;
-			$failValue += $absoluteVariations[$numDay];
-			$successValue -= $absoluteVariations[$numDay];
-			$lastAction = $FAIL;
+		if (!FundHabit.$datesLogged.includes($today)){
+			FundHabit.$datesLogged.push($today);
+			$numDay = FundHabit.$datesLogged.length - 1;
+			FundHabit.$failValue += FundHabit.$absoluteVariations[$numDay];
+			FundHabit.$successValue -= FundHabit.$absoluteVariations[$numDay];
+			FundHabit.$lastAction = FundHabit.$FAIL;
 			loadUI();
 			saveData();
 		} else {
-			if ($datesLogged.includes($today) && $lastAction == $SUCCESS){
-				$numDay = $datesLogged.length - 1;
-				$failValue += $absoluteVariations[$numDay];
-				$successValue -= $absoluteVariations[$numDay];
-				$lastAction = "";
-				$index = $datesLogged.indexOf($today);
-				if ($index !== -1) $datesLogged.splice($index, 1);
+			if (FundHabit.$datesLogged.includes($today) && FundHabit.$lastAction == FundHabit.$SUCCESS){
+				$numDay = FundHabit.$datesLogged.length - 1;
+				FundHabit.$failValue += FundHabit.$absoluteVariations[$numDay];
+				FundHabit.$successValue -= FundHabit.$absoluteVariations[$numDay];
+				FundHabit.$lastAction = "";
+				$index = FundHabit.$datesLogged.indexOf($today);
+				if ($index !== -1) FundHabit.$datesLogged.splice($index, 1);
 				loadUI();
 				saveData();
 			} else {
-				showError("Action already registered");
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabit.lan]);
 			}
 		}
 	});
 
 	$('div.fund#success').click(function(){
 		$today = moment().format('DD-MM-YYYY');
-		if (!$datesLogged.includes($today)){
-			$datesLogged.push($today);
-			$numDay = $datesLogged.length - 1;
-			$failValue -= $absoluteVariations[$numDay];
-			$successValue += $absoluteVariations[$numDay];
-			$lastAction = $SUCCESS;
+		if (!FundHabit.$datesLogged.includes($today)){
+			FundHabit.$datesLogged.push($today);
+			$numDay = FundHabit.$datesLogged.length - 1;
+			FundHabit.$failValue -= FundHabit.$absoluteVariations[$numDay];
+			FundHabit.$successValue += FundHabit.$absoluteVariations[$numDay];
+			FundHabit.$lastAction = FundHabit.$SUCCESS;
 			loadUI();
 			saveData();
 		} else {
-			if ($datesLogged.includes($today) && $lastAction == $FAIL){
-				$numDay = $datesLogged.length - 1;
-				$failValue -= $absoluteVariations[$numDay];
-				$successValue += $absoluteVariations[$numDay];
-				$lastAction = "";
-				$index = $datesLogged.indexOf($today);
-				if ($index !== -1) $datesLogged.splice($index, 1);
+			if (FundHabit.$datesLogged.includes($today) && FundHabit.$lastAction == FundHabit.$FAIL){
+				$numDay = FundHabit.$datesLogged.length - 1;
+				FundHabit.$failValue -= FundHabit.$absoluteVariations[$numDay];
+				FundHabit.$successValue += FundHabit.$absoluteVariations[$numDay];
+				FundHabit.$lastAction = "";
+				$index = FundHabit.$datesLogged.indexOf($today);
+				if ($index !== -1) FundHabit.$datesLogged.splice($index, 1);
 				loadUI();
 				saveData();
 			} else {
-				showError("Action already registered");
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabit.lan]);
 			}
 		}
 	});
@@ -173,12 +208,17 @@ $(document).ready(function() {
 		if ($('#graph-wrapper').is(':visible')){
 			generateGraph();
 		}
-		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
+		showSuccess(FundHabit.changesSavedString[FundHabit.lan]);
 	}
 
 	function showError($msg) {
 		$('footer.alert p').html($msg);
 		$('footer.alert').slideToggle(500).delay(1500).slideToggle(500);
+	}
+
+	function showSuccess($msg) {
+		$('footer.ok p').html($msg);
+		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
 	}
     
     $("#help").click(function() {
@@ -235,30 +275,33 @@ $(document).ready(function() {
 	});
 
 	$('input#base').change(function() {
-		$base = parseFloat($('input#base').attr("value"));
-		$labelsXAxes = generateLabelsXAxes($relativeVariations);
-		$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
+		FundHabit.$base = parseFloat($('input#base').attr("value"));
+		FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
+		FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
 		saveData();
 	})
 
 	$("input[name='increment_type']").change(function() {
 		if (this.value == 'linear'){
 			$('.not_linear_info').hide();
-			$placeholderVariations = $linearPlaceholder.split(" ").map(Number);
-			$relativeVariations = $placeholderVariations;
+			FundHabit.$placeholderVariations = FundHabit.$linearPlaceholder.split(" ").map(Number);
+			FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
 		}
 		if (this.value == 'not_linear'){
 			$('.not_linear_info').show();
-			$placeholderVariations = $notLinearPlaceholder.split(" ").map(Number);
-			$relativeVariations = $placeholderVariations;
+			FundHabit.$placeholderVariations = FundHabit.$notLinearPlaceholder.split(" ").map(Number);
+			FundHabit.$relativeVariations = FundHabit.$placeholderVariations;
 		}
 
-		$labelsXAxes = generateLabelsXAxes($relativeVariations);
-		$absoluteVariations = generateAbsoluteVariations($relativeVariations, $base);
+		FundHabit.$labelsXAxes = generateLabelsXAxes(FundHabit.$relativeVariations);
+		FundHabit.$absoluteVariations = generateAbsoluteVariations(FundHabit.$relativeVariations, FundHabit.$base);
 
 		saveData();
 	})
 
+	// Entry point:
+
+	loadData();
 	loadUI();
 
 });

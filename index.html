@@ -8,88 +8,96 @@
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/Chart.min.js"></script>
 	<script type="text/javascript" src="js/moment.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8">
+	<meta http-equiv="Content-Language" content="en"/>
 </head>
 <body>
-	<header>
-		<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url' id='coffe'>Useful? Give me coffe to keep improving! ☕️</a>
-		<h1>FundHabit</h1>
-		<h2>Incentive and track your habits! <a id="help" href='javascript:void(0)' title="Help"><i class="far fa-question-circle fa-1x"></i></a></h2>
-		<hr/>
-	</header>
-	<nav id='instructions'>
-		<div>
-			<span class="fa-stack">
-		    	<span class="far fa-circle fa-2x"></span>
-		    	<strong class="fa-stack-1x">1</strong>
-			</span>
-			Set up your incentives and disincentives 🎯
-		</div>
+	<div id="content">
+		<header>
+			<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url' id='coffe'>Useful? Give me coffe to keep improving! ☕️</a>
+			<a target='_blank' href='https://www.github.com/mvarona/FundHabit' id='github'>Repository 🧑‍💻</a>
+			<div id="lang">
+				<a href='javascript:void(0)' id="lan_EN">EN</a> - 
+				<a href='javascript:void(0)' id="lan_ES">ES</a>
+			</div>
+			<h1>FundHabit</h1>
+			<h2>Incentive and track your habits! <a id="help" href='javascript:void(0)' title="Help"><i class="far fa-question-circle fa-1x"></i></a></h2>
+			<hr/>
+		</header>
+		<nav id='instructions'>
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">1</strong>
+				</span>
+				Set up your incentives and disincentives 🎯
+			</div>
 
-		<div>
-			<span class="fa-stack">
-		    	<span class="far fa-circle fa-2x"></span>
-		    	<strong class="fa-stack-1x">2</strong>
-			</span>
-			Return here to log your failures and successes 📈
-		</div>
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">2</strong>
+				</span>
+				Return here to log your failures and successes 📈
+			</div>
 
-		<div>
-			<span class="fa-stack">
-		    	<span class="far fa-circle fa-2x"></span>
-		    	<strong class="fa-stack-1x">3</strong>
-			</span>
-			Try to enlarge your in-streak fund and decreasing the failure fund! 💪💰
-		</div>
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">3</strong>
+				</span>
+				Try to enlarge your in-streak fund and decreasing the failure fund! 💪💰
+			</div>
 
-		<p>Your data is not shared. All data remains private on your browser, stored through cookies<br/>
-		Because of that, your data remains only in one browser of one device, as long as you don't <a href='https://www.allaboutcookies.org/manage-cookies/clear-cookies-installed.html' target='_blank' rel="nofollow">clean this page cookies</a></p>
-		<hr/>
-	</nav>
+			<p>Your data is not shared. All data remains private on your browser, stored through cookies<br/>
+			Because of that, your data remains only in one browser of one device, as long as you don't <a href='https://www.allaboutcookies.org/manage-cookies/clear-cookies-installed.html' target='_blank' rel="nofollow">clean this page cookies</a></p>
+			<hr/>
+		</nav>
 
-	<section>
-		<span id='base'>Choose the base amount of money to add on each fund when you complete or skip an habit:</span>
-		<div class='circle'>
-			<input id='base' value='0.50'></input>
-		</div>
-		<br/><br/>
-		<div id='graph-wrapper'>
-			<canvas id="graph_incentives"></canvas>
+		<section>
+			<span id='base'>Choose the base amount of money to add on each fund when you complete or skip an habit:</span>
+			<div class='circle'>
+				<input id='base' value='0.50'></input>
+			</div>
+			<br/><br/>
+			<div id='graph-wrapper'>
+				<canvas id="graph_incentives"></canvas>
+				<br/>
+				<span id='span_incentives'>If you keep the habit for more than X days, you will be earning Y (fictial) money per day!</span>
+			</div>
 			<br/>
-			<span id='span_incentives'>If you keep the habit for more than X days, you will be earning Y (fictial) money per day!</span>
-		</div>
-		<br/>
-		<input type='radio' name='increment_type' id='linear' value='linear'></input>
-		<label for='linear'>Linear (all days count the same)</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type='radio' name='increment_type' id='not_linear' value='not_linear'></input>
-		<label for='not_linear'>Not linear (each day counts what you decide)</label>&nbsp;&nbsp;&nbsp;&nbsp;<a id="show-graph" href='javascript:void(0)'>How much will I earn / lose each day</a>
-		<br/>
-		<label class='not_linear_info'>Input the variation for each day in percentage (we recommend higher values at the beginning and at the end of, for example, a 14 days streak):</label>
+			<input type='radio' name='increment_type' id='linear' value='linear'></input>
+			<label for='linear'>Linear (all days count the same)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type='radio' name='increment_type' id='not_linear' value='not_linear'></input>
+			<label for='not_linear'>Not linear (each day counts what you decide)</label>&nbsp;&nbsp;&nbsp;&nbsp;<a id="show-graph" href='javascript:void(0)'><i>How much will I earn / lose each day</i></a>
+			<br/>
+			<label class='not_linear_info'>Input the variation for each day in percentage (we recommend higher values at the beginning and at the end of, for example, a 14 days streak):</label>
 
-		<br/>
-		<input type='text' class='not_linear_info' id='txt_not_linear' placeholder='25 25 25 25 15 15 15 15 20 20 45 45 45 45 50'/>
-		<br/>
-		<label class='not_linear_info'>The last percentage will be applied to the last day and the following. You can specify as many days as you want, just separate their percentages with a space</label>
-		<br/><br/>
-		<div class='fund-wrapper'>
-			<div class='fund' id='fail' title="Touch to log a skipped habit">
-				<span class='amount'>4.55</span>
-				<span class='guide'>Touch to log a skipped habit</span>
-				<span class='name'>Skipped-habits fund</span>
+			<br/>
+			<input type='text' class='not_linear_info' id='txt_not_linear' placeholder='25 25 25 25 15 15 15 15 20 20 45 45 45 45 50'/>
+			<br/>
+			<label class='not_linear_info'>The last percentage will be applied to the last day and the following. You can specify as many days as you want, just separate their percentages with a space</label>
+			<br/><br/>
+			<div class='fund-wrapper'>
+				<div class='fund' id='fail' title="Touch to log a skipped habit">
+					<span class='amount'>4.55</span>
+					<span class='guide'>Touch to log a skipped habit</span>
+					<span class='name'>Skipped-habits fund</span>
+				</div>
+				<div class='fund' id='success' title="Touch to log a completed habit">
+					<span class='amount'>2.32</span>
+					<span class='guide'>Touch to log a completed habit</span>
+					<span class='name'>Completed-habits fund</span>
+				</div>
 			</div>
-			<div class='fund' id='success' title="Touch to log a completed habit">
-				<span class='amount'>2.32</span>
-				<span class='guide'>Touch to log a completed habit</span>
-				<span class='name'>Completed-habits fund</span>
-			</div>
-		</div>
-		<br/><br/><br/><br/><br/><br/>
+			<br/><br/><br/><br/><br/><br/>
 
-	</section>
+		</section>
+	</div>
 
-	<footer>
-		<hr/>
+	<footer class="cookies">
 		<p>This tool only uses essential cookies to work. No other cookies are used.</p>
 	</footer>
 
