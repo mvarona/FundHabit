@@ -19,6 +19,8 @@ $(document).ready(function() {
 	FundHabit.spanIncentives3String = {EN: " (fictial) money per day!", ES: " de dinero (ficticio) por día!"};
 	FundHabit.actionAlreadyRegisteredString = {EN: "Action already registered", ES: "Acción ya registrada"};
 	FundHabit.changesSavedString = {EN: "Changes saved successfully", ES: "Cambios guardados correctamente"};
+	FundHabit.noCookiesToCleanString = {EN: "There aren't cookies to clean, reload the page to create them again", ES: "No hay cookies que eliminar, recarga la página para volver a crearlas"};
+	FundHabit.cookiesDeleted = {EN: "Cookies successfully deleted. Reload the page to start from scratch", ES: "Cookies eliminadas correctamente. Recarga la página para empezar de cero"};
 
 	// Global variables:
 
@@ -38,17 +40,16 @@ $(document).ready(function() {
 
 	FundHabit.$datesLogged = [];
 
+	FundHabit.$cookieName = "data1";
+
 	// Functions:
 
 	function loadData(){
-		if ($.cookie('data')) {
-			$.cookie('data', FundHabit);
-			console.log($.cookie('data'));
-	    	//FundHabit = $.cookie('data');
-	    	alert(FundHabit.lan);
+		if ($.cookie(FundHabit.$cookieName)) {
+			FundHabit = JSON.parse($.cookie(FundHabit.$cookieName));
 	    } else {
-	        var CookieSet = $.cookie('data', FundHabit);
-	    }  
+	        var CookieSet = $.cookie(FundHabit.$cookieName, JSON.stringify(FundHabit));
+	    }
 	}
 
 	function generateLabelsXAxes(nameArray){
@@ -151,6 +152,15 @@ $(document).ready(function() {
 	    $('div.fund#fail span.amount').html(Math.round((FundHabit.$failValue) * 100) / 100);
 	    $('div.fund#success span.amount').html(Math.round((FundHabit.$successValue) * 100) / 100);
 	}
+
+	$('#clean-cookies').click(function() {
+		if ($.cookie(FundHabit.$cookieName)) {
+			document.cookie = FundHabit.$cookieName + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			showSuccess(FundHabit.cookiesDeleted[FundHabit.lan]);
+	    } else {
+	        showError(FundHabit.noCookiesToCleanString[FundHabit.lan]);
+	    }
+	});
 
 	$('div.fund#fail').click(function(){
 		$today = moment().format('DD-MM-YYYY');
