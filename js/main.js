@@ -304,6 +304,11 @@ $(document).ready(function() {
 			}
 
 			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
+
+			if (FundHabitData.failValue < 0){
+				FundHabitData.failValue = 0;
+			}
+
 			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.SUCCESS;
 
@@ -322,6 +327,11 @@ $(document).ready(function() {
 					numDay = FundHabitData.absoluteVariations.length - 1;
 				}
 				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
+				
+				if (FundHabitData.failValue < 0){
+					FundHabitData.failValue = 0;
+				}
+
 				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
 
