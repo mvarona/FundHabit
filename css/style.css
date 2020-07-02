@@ -45,6 +45,15 @@ header {
 	margin-top: 1%;
 }
 
+header img#logo {
+	width: 8em;
+	height: 8em;
+	border-radius: 100%;
+	position: absolute;
+	top: 2%;
+	left: 2%;
+}
+
 h1 {
 	font-size: 4em;
 	font-weight: 300;
@@ -292,4 +301,66 @@ footer.ok {
 	z-index: 100;
 	padding-top: .5%;
 	font-size: 1.1em;
+}
+
+/* MEDIA QUERIES: */
+
+.hideOnSmallScreen {
+	display: inline-block;
+}
+.showOnSmallScreen {
+	display: none;
+}
+
+@media only screen and (max-width: 1030px) {
+  header img#logo {
+  	width: 4em;
+  	height: 4em;
+  }
+  section div.circle {
+  	width: 50px;
+  	height: 50px;
+  	margin-left: 44%;
+  	position: relative;
+  }
+  section input#base {
+  	margin-top: 10%;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  header a {
+  	font-size: .8em;
+  }
+  header h1 {
+	padding-top: 2%;
+  }
+  header h2 {
+  	margin-top: -1.5%;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  header img#logo {
+  	width: 2em;
+  	height: 2em;
+  	top: .8%;
+  }
+  header a {
+  	font-size: .8em;
+  }
+  header h1 {
+	padding-top: 5%;
+	font-size: 2em;
+  }
+  header h2 {
+  	margin-top: -1.5%;
+  	font-size: 1.5em;
+  }
+  .hideOnSmallScreen {
+  	display: none;
+  }
+  .showOnSmallScreen {
+  	display: block;
+  }
 }

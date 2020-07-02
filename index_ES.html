@@ -16,14 +16,23 @@
 <body>
 	<div id="content">
 		<header>
-			<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url' id='coffe'>¿Útil? ¡Dame café para ayudarme a mejorar! ☕️</a>
-			<a target='_blank' href='https://www.github.com/mvarona/FundHabit' id='github'>Repositorio 🧑‍💻</a>
+			<img alt="logo" id='logo' src="images/logo.png"/>
+			<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url' id='coffe' class='hideOnSmallScreen'>¿Útil? ¡Dame café para seguir mejorando! ☕️</a>
+			<a target='_blank' href='https://www.github.com/mvarona/FundHabit' id='github' class='hideOnSmallScreen'>Repositorio 🧑‍💻</a>
 			<div id="lang">
-				<a href='javascript:void(0)' id="lan_EN">EN</a> - 
-				<a href='javascript:void(0)' id="lan_ES" class="active">ES</a>
+				<a href='javascript:void(0)' class="lan_EN hideOnSmallScreen">EN</a> <span class='hideOnSmallScreen'>-</span>
+				<a href='javascript:void(0)' class="lan_ES active hideOnSmallScreen">ES</a>
 			</div>
 			<h1>FundHabit</h1>
 			<h2>¡Incentiva y registra tus hábitos! <a id="help" href='javascript:void(0)' title="Help"><i class="far fa-question-circle fa-1x"></i></a></h2>
+			<div class='showOnSmallScreen'>
+				<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url'>¿Útil? ¡Dame café para seguir mejorando! ☕️</a><br/>
+				<a target='_blank' href='https://www.github.com/mvarona/FundHabit'>Repositorio 🧑‍💻</a><br/>
+				<div id="lang">
+					<a href='javascript:void(0)' class="lan_EN">EN</a> <span>-</span> 
+					<a href='javascript:void(0)' class="lan_ES active">ES</a>
+				</div>
+			</div>
 			<hr/>
 		</header>
 		<nav id='instructions'>
@@ -71,7 +80,9 @@
 			<input type='radio' name='increment_type' id='linear' value='linear'></input>
 			<label for='linear'>Variaciones lineales (todos los días cuentan lo mismo, 25%)</label>&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type='radio' name='increment_type' id='not_linear' value='not_linear'></input>
-			<label for='not_linear'>Variaciones no lineales (cada día cuenta lo que decidas)</label>&nbsp;&nbsp;&nbsp;&nbsp;<a id="show-graph" href='javascript:void(0)'><i>Cuánto ganaré / perderé cada día</i></a>
+			<label for='not_linear'>Variaciones no lineales (cada día cuenta lo que decidas)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<br/><br/>
+			<a id="show-graph" href='javascript:void(0)'><i>Cuánto ganaré / perderé cada día</i></a>
 			<br/>
 			<label class='not_linear_info'>Introduce la variación para cada día en porcentaje (recomendamos valores más altos al inicio y al final de una racha de, por ejemplo, 14 días):</label>
 

@@ -58,7 +58,7 @@ $(document).ready(function() {
 
 	// Utility variables:
 
-	FundHabit.cookieName = "data1";
+	FundHabit.cookieName = "fundhabit_cookie";
 	FundHabit.graphColor = "rgba(255, 99, 132, 0.2)";
 
 	// Functions:
@@ -224,14 +224,14 @@ $(document).ready(function() {
 	    }
 	});
 
-	$('#lan_EN').click(function(){
+	$('.lan_EN').click(function(){
 		FundHabitData.lan = "EN";
 		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
 		saveData();
 		window.location = 'index';
 	});
 
-	$('#lan_ES').click(function(){
+	$('.lan_ES').click(function(){
 		FundHabitData.lan = "ES";
 		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
 		saveData();
