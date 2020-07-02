@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-	var FundHabit = {}; // Namespace for variables
-	var FundHabitData = {}; // Namespace for variables that need to be stored on cookies
+	var FundHabit = {}; // Namespace for variables and default values
+	var FundHabitData = {}; // Namespace for variables and custom values, stored on cookies
 
 	FundHabit.url = window.location.href;
 	FundHabit.fileName = FundHabit.url.substr(FundHabit.url.lastIndexOf('/') + 1);
@@ -55,7 +55,10 @@ $(document).ready(function() {
 	FundHabitData.lastAction = "";
 	FundHabitData.datesLogged = [];
 
+	// Utility variables:
+
 	FundHabit.cookieName = "data1";
+	FundHabit.graphColor = "rgba(255, 99, 132, 0.2)";
 
 	// Functions:
 
@@ -99,7 +102,7 @@ $(document).ready(function() {
 		        datasets: [{
 		            label: FundHabit.apportationToFundString[FundHabitData.lan],
 		            data: FundHabitData.absoluteVariations,
-		            backgroundColor: 'rgba(255, 99, 132, 0.2)'
+		            backgroundColor: FundHabit.graphColor
 		        }]
 		    },
 		    options: {
@@ -141,10 +144,13 @@ $(document).ready(function() {
 		    
 		    if (FundHabitData.relativeVariations.toString().replaceAll(",", " ") == FundHabit.notLinearPlaceholder){
 			    $('#txt_not_linear').attr("placeholder", FundHabit.notLinearPlaceholder);
+			    $('#txt_not_linear').val("");
 			} else {
 				$('#txt_not_linear').val(FundHabitData.relativeVariations.toString());
 			}
 		}
+
+		$('input#base').val(FundHabitData.base);
 
 	    greaterValue = FundHabitData.failValue > FundHabitData.successValue ? FundHabitData.failValue : FundHabitData.successValue;
 	    ratio = 1;
@@ -152,11 +158,11 @@ $(document).ready(function() {
 	    fontSize = 3;
 
 	    if (greaterValue == FundHabitData.failValue){
-	    	ratio = FundHabitData.successValue / FundHabitData.failValue;
+	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
 	    }
 
 	    if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.failValue){
-	    	ratio = FundHabitData.successValue / FundHabitData.failValue;
+	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#success').css("width", standardSize * ratio + "em");
@@ -168,7 +174,7 @@ $(document).ready(function() {
 	    	}, 300);
 	    
 	    } else if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.successValue){
-	    	ratio = FundHabitData.failValue / FundHabitData.successValue;
+	    	ratio = Math.abs(FundHabitData.failValue / FundHabitData.successValue);
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
@@ -208,6 +214,7 @@ $(document).ready(function() {
 	});
 
 	$('div.fund#fail').click(function(){
+		$('div.fund span.guide').hide();
 		today = moment().format('DD-MM-YYYY');
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
@@ -234,6 +241,7 @@ $(document).ready(function() {
 	});
 
 	$('div.fund#success').click(function(){
+		$('div.fund span.guide').hide();
 		today = moment().format('DD-MM-YYYY');
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
@@ -291,13 +299,13 @@ $(document).ready(function() {
 	});
 
 	$('div.fund#fail, div.fund#fail span.amount').mouseenter(function() {
-		$('div.fund#success span.guide').css("color", "rgb(70,200,50)");
+		$('div.fund#success span.guide').css("color", $('div.fund#success').css("background-color"));
 		$('div.fund#fail span.guide').css("color", "black");
 		$('div.fund span.guide').show();
 	});
 
 	$('div.fund#success, div.fund#success span.amount').mouseenter(function() {
-		$('div.fund#fail span.guide').css("color", "rgb(220,50,70)");
+		$('div.fund#fail span.guide').css("color", $('div.fund#fail').css("background-color"));
 		$('div.fund#success span.guide').css("color", "black");
 		$('div.fund span.guide').show();
 	});
@@ -310,26 +318,6 @@ $(document).ready(function() {
 		$('div.fund span.guide').hide();
 	});
 
-	$('div.fund#fail').click(function() {
-		$('div.fund span.guide').hide();
-		$('div.fund#success span.state').css("color", "rgb(70,200,50)");
-		$('div.fund#fail span.state').css("color", "black");
-		$('div.fund span.state').fadeIn();
-		setTimeout(function(){
-			$('div.fund span.state').fadeOut();
-		}, 1000);
-	});
-
-	$('div.fund#success').click(function() {
-		$('div.fund span.guide').hide();
-		$('div.fund#fail span.state').css("color", "rgb(220,50,70)");
-		$('div.fund#success span.state').css("color", "black");
-		$('div.fund span.state').fadeIn();
-		setTimeout(function(){
-			$('div.fund span.state').fadeOut();
-		}, 1000);
-	});
-
 	$('input#base').change(function() {
 		$('input#base').val($('input#base').val().replace(",", "."));
 
@@ -338,7 +326,6 @@ $(document).ready(function() {
 			$('input#base').val("0.50");
 		} else {
 			FundHabitData.base = parseFloat($('input#base').val());
-			FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
 			FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 			saveData();
 		}
@@ -347,6 +334,7 @@ $(document).ready(function() {
 	$("input[name='increment_type']").change(function() {
 		if (this.value == 'linear'){
 			$('.not_linear_info').hide();
+			$('input#txt_not_linear').val("");
 			FundHabit.variations = FundHabit.linearPlaceholder.split(" ").map(Number);
 			FundHabitData.relativeVariations = FundHabit.variations;
 			FundHabitData.mode = FundHabit.LINEAR;
@@ -366,15 +354,15 @@ $(document).ready(function() {
 
 	$("input#txt_not_linear").change(function() {
 
-		if (!isNaN($("input#txt_not_linear").val().replaceAll(" ", "")) && parseInt($("input#txt_not_linear").val().replaceAll(" ", "") > 0)){
+		if (isNaN($("input#txt_not_linear").val().replaceAll(" ", "")) || parseInt($("input#txt_not_linear").val().replaceAll(" ", "") <= 0)){
+			showError(FundHabit.notLinearVariationsMustBePositiveString[FundHabitData.lan]);
+		} else {
 			FundHabitData.variations = $("input#txt_not_linear").val().split(" ").map(Number);
 			FundHabitData.relativeVariations = FundHabit.variations;
 			FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
 			FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 
 			saveData();
-		} else {
-			showError(FundHabit.notLinearVariationsMustBePositiveString[FundHabitData.lan]);
 		}
 
 	});
