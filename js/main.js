@@ -82,6 +82,8 @@ $(document).ready(function() {
 	}
 
 	function generateAbsoluteVariations(relativeVariations, base){
+		// Absolute variations are the revenues per day, shown on graph and on its caption
+
 		absoluteVariations = [];
 		for (i = 0; i < relativeVariations.length; i++) {
 			if (i == 0){
@@ -127,6 +129,7 @@ $(document).ready(function() {
 
 	function loadUI() {
 
+		// Only show instructions if it hasn't been used yet: 
 		if (FundHabitData.datesLogged.length != 0){
 			$('#instructions').hide();
 		}
@@ -142,6 +145,7 @@ $(document).ready(function() {
 		    $('#not_linear').attr("checked", true);
 		    $('.not_linear_info').show();
 		    
+		    // If relative variations are the default, show them on placeholder. Otherwise, show their value:
 		    if (FundHabitData.relativeVariations.toString().replaceAll(",", " ") == FundHabit.notLinearPlaceholder){
 			    $('#txt_not_linear').attr("placeholder", FundHabit.notLinearPlaceholder);
 			    $('#txt_not_linear').val("");
@@ -157,12 +161,13 @@ $(document).ready(function() {
 	    standardSize = 20;
 	    fontSize = 3;
 
-	    if (greaterValue == FundHabitData.failValue){
-	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
-	    }
-
+	    // Calculate sizes for fund circles:
+	    // Fail value is greater => Fail circle greater:
 	    if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.failValue){
+	    	
+	    	// Absolute value to avoid disappearance when negative amounts:
 	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
+	    	
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#success').css("width", standardSize * ratio + "em");
@@ -173,8 +178,12 @@ $(document).ready(function() {
 		    	$('div.fund#fail span.amount').css("font-size", fontSize * (1 + ratio) + "em");
 	    	}, 300);
 	    
+	    // Success value is greater => Success circle greater:
 	    } else if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.successValue){
+	    	
+	    	// Absolute value to avoid disappearance when negative amounts:
 	    	ratio = Math.abs(FundHabitData.failValue / FundHabitData.successValue);
+	    	
 	    	setTimeout(function(){
 	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
@@ -183,8 +192,24 @@ $(document).ready(function() {
 		    	$('div.fund#success').css("width", standardSize * (1 + ratio) + "em");
 		    	$('div.fund#success').css("height", standardSize * (1 + ratio) + "em");
 		    	$('div.fund#success span.amount').css("font-size", fontSize * (1 + ratio) + "em");
-	    	}, 300); 
+	    	}, 300);
+	    
+	    // Both values are equal => Same circle size:
+	    } else if (FundHabitData.failValue == FundHabitData.successValue) {
+	    	ratio = 1;
+	    	
+	    	setTimeout(function(){
+	    		$('div.fund span.guide, div.fund span.state').html("");
+	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
+		    	$('div.fund#fail').css("height", standardSize * ratio + "em");
+		    	$('div.fund#fail span.amount').css("font-size", fontSize * ratio + "em");
+		    	$('div.fund#success').css("width", standardSize * ratio + "em");
+		    	$('div.fund#success').css("height", standardSize * ratio + "em");
+		    	$('div.fund#success span.amount').css("font-size", fontSize * ratio + "em");
+	    	}, 300);
 	    }
+
+	    // Show amounts with two decimal positions:
 
 	    $('div.fund#fail span.amount').html(Math.round((FundHabitData.failValue) * 100) / 100);
 	    $('div.fund#success span.amount').html(Math.round((FundHabitData.successValue) * 100) / 100);
@@ -215,23 +240,34 @@ $(document).ready(function() {
 
 	$('div.fund#fail').click(function(){
 		$('div.fund span.guide').hide();
+
 		today = moment().format('DD-MM-YYYY');
+
+		// No action was made today:
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
 			numDay = FundHabitData.datesLogged.length - 1;
 			FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.FAIL;
+
 			loadUI();
 			saveData();
+
+		// An action was already made today:
 		} else {
+
+			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
 			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.SUCCESS){
 				numDay = FundHabitData.datesLogged.length - 1;
 				FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
+
+				// Remove date from dates log:
 				index = FundHabitData.datesLogged.indexOf(today);
 				if (index !== -1) FundHabitData.datesLogged.splice(index, 1);
+				
 				loadUI();
 				saveData();
 			} else {
@@ -242,23 +278,34 @@ $(document).ready(function() {
 
 	$('div.fund#success').click(function(){
 		$('div.fund span.guide').hide();
+
 		today = moment().format('DD-MM-YYYY');
+		
+		// No action was made today:
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
 			numDay = FundHabitData.datesLogged.length - 1;
 			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.SUCCESS;
+
 			loadUI();
 			saveData();
+		
+		// An action was already made today:
 		} else {
+			
+			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
 			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.FAIL){
 				numDay = FundHabitData.datesLogged.length - 1;
 				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
+
+				// Remove date from dates log:
 				index = FundHabitData.datesLogged.indexOf(today);
 				if (index !== -1) FundHabitData.datesLogged.splice(index, 1);
+
 				loadUI();
 				saveData();
 			} else {
@@ -298,6 +345,8 @@ $(document).ready(function() {
 		}
 	});
 
+	// Trick to show the guide at the same distance on both circles:
+
 	$('div.fund#fail, div.fund#fail span.amount').mouseenter(function() {
 		$('div.fund#success span.guide').css("color", $('div.fund#success').css("background-color"));
 		$('div.fund#fail span.guide').css("color", "black");
@@ -319,8 +368,10 @@ $(document).ready(function() {
 	});
 
 	$('input#base').change(function() {
+		// Replace comma with dot for decimal annotation:
 		$('input#base').val($('input#base').val().replace(",", "."));
 
+		// Check the base amount is a positive number:
 		if (isNaN($('input#base').val()) || parseFloat($('input#base').val()) <= 0 ){
 			showError(FundHabit.baseMustBePositiveString[FundHabitData.lan]);
 			$('input#base').val("0.50");
@@ -332,6 +383,7 @@ $(document).ready(function() {
 	});
 
 	$("input[name='increment_type']").change(function() {
+
 		if (this.value == 'linear'){
 			$('.not_linear_info').hide();
 			$('input#txt_not_linear').val("");
@@ -346,6 +398,7 @@ $(document).ready(function() {
 			FundHabitData.mode = FundHabit.NOT_LINEAR;
 		}
 
+		// Re-generate labels and absolute variations:
 		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
 		FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 
@@ -354,6 +407,7 @@ $(document).ready(function() {
 
 	$("input#txt_not_linear").change(function() {
 
+		// Check if the input for no linear variations has at least one number, which must be an integer positive:
 		if (isNaN($("input#txt_not_linear").val().replaceAll(" ", "")) || parseInt($("input#txt_not_linear").val().replaceAll(" ", "") <= 0)){
 			showError(FundHabit.notLinearVariationsMustBePositiveString[FundHabitData.lan]);
 		} else {
