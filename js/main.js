@@ -306,7 +306,7 @@ $(document).ready(function() {
 			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 
 			if (FundHabitData.failValue < 0){
-				FundHabitData.failValue = 0;
+				FundHabitData.failValue = 0.00001;
 			}
 
 			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
@@ -329,7 +329,7 @@ $(document).ready(function() {
 				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 				
 				if (FundHabitData.failValue < 0){
-					FundHabitData.failValue = 0;
+					FundHabitData.failValue = 0.00001;
 				}
 
 				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
