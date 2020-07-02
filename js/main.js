@@ -9,10 +9,10 @@ $(document).ready(function() {
 	// Strings for localization:
 
 	FundHabit.dayString = {EN: "Day ", ES: "Día "};
-	FundHabit.apportationToFundString = {EN: "Apportation to fond", ES: "Aportación al fondo"};
+	FundHabit.apportationToFundString = {EN: "Contribution to fond", ES: "Aportación al fondo"};
 	FundHabit.spanIncentives1String = {EN: "If you keep the habit for more than ", ES: "¡Si mantienes el hábito durante más de "};
 	FundHabit.spanIncentives2String = {EN: " days, you will be earning ", ES: " días, ganarás "};
-	FundHabit.spanIncentives3String = {EN: " (fictial) money per day!", ES: " de dinero (ficticio) por día!"};
+	FundHabit.spanIncentives3String = {EN: " (fictional) money per day!", ES: " de dinero (ficticio) por día!"};
 	FundHabit.actionAlreadyRegisteredString = {EN: "Action already registered", ES: "Acción ya registrada"};
 	FundHabit.changesSavedString = {EN: "Changes saved successfully", ES: "Cambios guardados correctamente"};
 	FundHabit.noCookiesToCleanString = {EN: "There aren't cookies to clean, reload the page to create them again", ES: "No hay cookies que eliminar, recarga la página para volver a crearlas"};
