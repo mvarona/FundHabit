@@ -18,6 +18,7 @@ $(document).ready(function() {
 	FundHabit.noCookiesToCleanString = {EN: "There aren't cookies to clean, reload the page to create them again", ES: "No hay cookies que eliminar, recarga la página para volver a crearlas"};
 	FundHabit.cookiesDeletedString = {EN: "Cookies successfully deleted. Reload the page to start from scratch", ES: "Cookies eliminadas correctamente. Recarga la página para empezar de cero"};
 	FundHabit.baseMustBePositiveString = {EN: "The base amount must be a positive number", ES: "La cantidad base debe ser un número positivo"};
+	FundHabit.notLinearVariationsMustBePositiveString = {EN: "The variations must be positive numbers for each day", ES: "Las variaciones deben ser números positivos para cada día"};
 
 	// Default values:
 
@@ -38,7 +39,7 @@ $(document).ready(function() {
 	}
 
 	FundHabitData.mode = FundHabit.LINEAR;
-	
+
 	if (FundHabitData.mode == FundHabit.LINEAR){
 		FundHabit.variations = FundHabit.linearPlaceholder.split(" ").map(Number);
 	} else {
@@ -341,7 +342,7 @@ $(document).ready(function() {
 			FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 			saveData();
 		}
-	})
+	});
 
 	$("input[name='increment_type']").change(function() {
 		if (this.value == 'linear'){
@@ -361,7 +362,22 @@ $(document).ready(function() {
 		FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
 
 		saveData();
-	})
+	});
+
+	$("input#txt_not_linear").change(function() {
+
+		if (!isNaN($("input#txt_not_linear").val().replaceAll(" ", "")) && parseInt($("input#txt_not_linear").val().replaceAll(" ", "") > 0)){
+			FundHabitData.variations = $("input#txt_not_linear").val().split(" ").map(Number);
+			FundHabitData.relativeVariations = FundHabit.variations;
+			FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+			FundHabitData.absoluteVariations = generateAbsoluteVariations(FundHabitData.relativeVariations, FundHabitData.base);
+
+			saveData();
+		} else {
+			showError(FundHabit.notLinearVariationsMustBePositiveString[FundHabitData.lan]);
+		}
+
+	});
 
 	// Entry point:
 
