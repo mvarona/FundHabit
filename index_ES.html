@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FundHabit - ¡Incentiva y registra tus hábitos!</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/all.css">
+	<script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/Chart.min.js"></script>
+	<script type="text/javascript" src="js/moment.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Language" content="es"/>
+</head>
+<body>
+	<div id="content">
+		<header>
+			<a target='_blank' href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9FM692EEBS7SU&source=url' id='coffe'>¿Útil? ¡Dame café para ayudarme a mejorar! ☕️</a>
+			<a target='_blank' href='https://www.github.com/mvarona/FundHabit' id='github'>Repositorio 🧑‍💻</a>
+			<div id="lang">
+				<a href='javascript:void(0)' id="lan_EN">EN</a> - 
+				<a href='javascript:void(0)' id="lan_ES" class="active">ES</a>
+			</div>
+			<h1>FundHabit</h1>
+			<h2>¡Incentiva y registra tus hábitos! <a id="help" href='javascript:void(0)' title="Help"><i class="far fa-question-circle fa-1x"></i></a></h2>
+			<hr/>
+		</header>
+		<nav id='instructions'>
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">1</strong>
+				</span>
+				Configura tus incentivos y desincentivos 🎯
+			</div>
+
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">2</strong>
+				</span>
+				Vuelve aquí para registrar tus fracasos y éxitos 📈
+			</div>
+
+			<div>
+				<span class="fa-stack">
+			    	<span class="far fa-circle fa-2x"></span>
+			    	<strong class="fa-stack-1x">3</strong>
+				</span>
+				¡Intenta hacer crecer tu fondo de buenas rachas y reducir el de fracasos! 💪💰
+			</div>
+
+			<p>Tus datos no son compartidos. Todos los datos permanecen privados en tu navegador, guardados a través de cookies<br/>
+			Por ello, tus datos están únicamente en un navegador de un dispositivo, hasta que <a href='javascript:void(0)' id="clean-cookies"><i>borres las cookies de esta página</i></a></p>
+			<hr/>
+		</nav>
+
+		<section>
+			<span id='base'>Elige la cantidad base de dinero a añadir a cada fondo cuando completas o te saltas un hábito:</span>
+			<div class='circle'>
+				<input id='base' value='0.50'></input>
+			</div>
+			<br/><br/>
+			<div id='graph-wrapper'>
+				<canvas id="graph_incentives"></canvas>
+				<br/>
+				<span id='span_incentives'>¡Si mantienes el hábito durante más de X días, ganarás Y dinero (ficticio) por día!</span>
+			</div>
+			<br/>
+			<input type='radio' name='increment_type' id='linear' value='linear'></input>
+			<label for='linear'>Variaciones lineales (todos los días cuentan lo mismo, 25%)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type='radio' name='increment_type' id='not_linear' value='not_linear'></input>
+			<label for='not_linear'>Variaciones no lineales (cada día cuenta lo que decidas)</label>&nbsp;&nbsp;&nbsp;&nbsp;<a id="show-graph" href='javascript:void(0)'><i>Cuánto ganaré / perderé cada día</i></a>
+			<br/>
+			<label class='not_linear_info'>Introduce la variación para cada día en porcentaje (recomendamos valores más altos al inicio y al final de una racha de, por ejemplo, 14 días):</label>
+
+			<br/>
+			<input type='text' class='not_linear_info' id='txt_not_linear' placeholder='25 25 25 25 15 15 15 15 20 20 45 45 45 45 50'/>
+			<br/>
+			<label class='not_linear_info'>El último porcentaje será usado para el último día en adelante. Puedes especificar tantos días como quieras, tan sólo separa los porcentajes con un espacio</label>
+			<br/><br/>
+			<div class='fund-wrapper'>
+				<div class='fund' id='fail' title="Toca para registrar un hábito saltado">
+					<span class='amount'>4.55</span>
+					<span class='guide'>Toca para registrar un hábito saltado</span>
+					<span class='name'>Fondo de hábitos saltados</span>
+				</div>
+				<div class='fund' id='success' title="Toca para registrar un hábito completado">
+					<span class='amount'>2.32</span>
+					<span class='guide'>Toca para registrar un hábito completado</span>
+					<span class='name'>Fondo de hábitos completados</span>
+				</div>
+			</div>
+			<br/><br/><br/><br/><br/><br/>
+
+		</section>
+	</div>
+
+	<footer class="cookies">
+		<p>Esta herramienta usa únicamente cookies esenciales para funcionar. Ningún otro tipo de cookies es usado.</p>
+	</footer>
+
+	<footer class='ok'>
+		<p>Cambios guardados correctamente</p>
+	</footer>
+
+	<footer class='alert'>
+		<p>Ocurrió un error. Por favor, inténtalo de nuevo más tarde</p>
+	</footer>
+</body>
+</html>

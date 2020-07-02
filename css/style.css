@@ -74,6 +74,10 @@ h2 {
 	right: 5px;
 }
 
+a.active {
+	text-decoration: underline;
+}
+
 a {
 	color: black!important;
 }

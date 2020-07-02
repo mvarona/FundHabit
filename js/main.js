@@ -16,6 +16,7 @@ $(document).ready(function() {
 	FundHabit.actionAlreadyRegisteredString = {EN: "Action already registered", ES: "Acción ya registrada"};
 	FundHabit.changesSavedString = {EN: "Changes saved successfully", ES: "Cambios guardados correctamente"};
 	FundHabit.noCookiesToCleanString = {EN: "There aren't cookies to clean, reload the page to create them again", ES: "No hay cookies que eliminar, recarga la página para volver a crearlas"};
+	FundHabit.confirmCookieCleaningString = {EN: "Are you sure that you want to delete the cookies only for this page? That will restore all your data and progress, and you will have to start again from scratch. This action cannot be undone", ES: "¿Estás seguro de que quieres eliminar las cookies sólo para esta página? Eso restaurará todos tus datos y progreso, y tendrás que empezar otra vez desde cero. Esta acción no se puede deshacer"};
 	FundHabit.cookiesDeletedString = {EN: "Cookies successfully deleted. Reload the page to start from scratch", ES: "Cookies eliminadas correctamente. Recarga la página para empezar de cero"};
 	FundHabit.baseMustBePositiveString = {EN: "The base amount must be a positive number", ES: "La cantidad base debe ser un número positivo"};
 	FundHabit.notLinearVariationsMustBePositiveString = {EN: "The variations must be positive numbers for each day", ES: "Las variaciones deben ser números positivos para cada día"};
@@ -124,7 +125,7 @@ $(document).ready(function() {
 			}
 			
 		});
-		$('#span_incentives').html(FundHabit.spanIncentives1String[FundHabitData.lan] + FundHabitData.absoluteVariations.length + FundHabit.spanIncentives2String[FundHabitData.lan] + Math.max.apply(Math, FundHabitData.absoluteVariations) + FundHabit.spanIncentives3String[FundHabitData.lan])
+		$('#span_incentives').html(FundHabit.spanIncentives1String[FundHabitData.lan] + FundHabitData.absoluteVariations.length + FundHabit.spanIncentives2String[FundHabitData.lan] + FundHabitData.absoluteVariations[FundHabitData.absoluteVariations.length - 1] + FundHabit.spanIncentives3String[FundHabitData.lan])
 	}
 
 	function loadUI() {
@@ -169,7 +170,6 @@ $(document).ready(function() {
 	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
 	    	
 	    	setTimeout(function(){
-	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#success').css("width", standardSize * ratio + "em");
 		    	$('div.fund#success').css("height", standardSize * ratio + "em");
 		    	$('div.fund#success span.amount').css("font-size", fontSize * ratio + "em");
@@ -185,7 +185,6 @@ $(document).ready(function() {
 	    	ratio = Math.abs(FundHabitData.failValue / FundHabitData.successValue);
 	    	
 	    	setTimeout(function(){
-	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
 		    	$('div.fund#fail').css("height", standardSize * ratio + "em");
 		    	$('div.fund#fail span.amount').css("font-size", fontSize * ratio + "em");
@@ -199,7 +198,6 @@ $(document).ready(function() {
 	    	ratio = 1;
 	    	
 	    	setTimeout(function(){
-	    		$('div.fund span.guide, div.fund span.state').html("");
 	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
 		    	$('div.fund#fail').css("height", standardSize * ratio + "em");
 		    	$('div.fund#fail span.amount').css("font-size", fontSize * ratio + "em");
@@ -217,8 +215,10 @@ $(document).ready(function() {
 
 	$('#clean-cookies').click(function() {
 		if ($.cookie(FundHabit.cookieName)) {
-			document.cookie = FundHabit.cookieName + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			showSuccess(FundHabit.cookiesDeletedString[FundHabitData.lan]);
+			if (confirm(FundHabit.confirmCookieCleaningString[FundHabitData.lan])){
+				document.cookie = FundHabit.cookieName + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+				showSuccess(FundHabit.cookiesDeletedString[FundHabitData.lan]);
+			}
 	    } else {
 	        showError(FundHabit.noCookiesToCleanString[FundHabitData.lan]);
 	    }
@@ -246,7 +246,13 @@ $(document).ready(function() {
 		// No action was made today:
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
-			numDay = FundHabitData.datesLogged.length - 1;
+			var numDay;
+			if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
+				numDay = FundHabitData.datesLogged.length - 1;
+			} else {
+				numDay = FundHabitData.absoluteVariations.length - 1;
+			}
+
 			FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.FAIL;
@@ -259,7 +265,13 @@ $(document).ready(function() {
 
 			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
 			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.SUCCESS){
-				numDay = FundHabitData.datesLogged.length - 1;
+				var numDay;
+				if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
+					numDay = FundHabitData.datesLogged.length - 1;
+				} else {
+					numDay = FundHabitData.absoluteVariations.length - 1;
+				}
+
 				FundHabitData.failValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.successValue -= FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
@@ -284,7 +296,13 @@ $(document).ready(function() {
 		// No action was made today:
 		if (!FundHabitData.datesLogged.includes(today)){
 			FundHabitData.datesLogged.push(today);
-			numDay = FundHabitData.datesLogged.length - 1;
+			var numDay;
+			if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
+				numDay = FundHabitData.datesLogged.length - 1;
+			} else {
+				numDay = FundHabitData.absoluteVariations.length - 1;
+			}
+
 			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.SUCCESS;
@@ -297,7 +315,12 @@ $(document).ready(function() {
 			
 			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
 			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.FAIL){
-				numDay = FundHabitData.datesLogged.length - 1;
+				var numDay;
+				if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
+					numDay = FundHabitData.datesLogged.length - 1;
+				} else {
+					numDay = FundHabitData.absoluteVariations.length - 1;
+				}
 				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
