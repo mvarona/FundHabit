@@ -1,4 +1,5 @@
-# <img src="images/logo.png" alt="FundHabit logo" width="120"/> FundHabit
+<img src="images/logo.png" alt="FundHabit logo" width="100"/>
+# FundHabit
 ## Incentive and track your habits! 
 Available on https://mvarona.github.io/FundHabit 
 
@@ -14,7 +15,8 @@ Because of that, your data remain only in one browser of one device, as long as 
 
 <hr/>
 
-# <img src="images/logo.png" alt="FundHabit logo" width="120" /> FundHabit
+<img src="images/logo.png" alt="FundHabit logo" width="100" />
+# FundHabit
 ## ¡Incentiva y registra tus hábitos!
 Disponible en https://mvarona.github.io/FundHabit
 
