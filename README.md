@@ -2,7 +2,7 @@
 ## Incentive and track your habits! 
 Available on https://mvarona.github.io/FundHabit 
 
-<hr/>
+#
 
 1. Set up your incentives and disincentives 🎯 
 2. Return here to log your failures and successes 📈
@@ -12,13 +12,13 @@ Your data is not shared. All data remain private on your browser, stored through
 
 Because of that, your data remain only in one browser of one device, as long as you don't clean this page cookies
 
-<hr/><hr/>
+<hr/>
 
 # <img src="images/logo.png" alt="FundHabit logo" width="100"/> FundHabit
 ## ¡Incentiva y registra tus hábitos!
 Disponible en https://mvarona.github.io/FundHabit
 
-<hr/>
+#
 
 1. Configura tus incentivos y desincentivos 🎯 
 2. Vuelve aquí para registrar tus fracasos y éxitos 📈
