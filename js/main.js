@@ -23,17 +23,22 @@ $(document).ready(function() {
 
 	FundHabit.notLinearPlaceholder = "25 25 25 25 15 15 15 15 20 20 45 45 45 45 50";
 	FundHabit.linearPlaceholder = "25 25 25 25 25 25 25 25 25 25 25 25 25 25 25";
-	FundHabitData.base = "0.50";
+	FundHabit.base = 0.50;
+	FundHabit.FAIL = "FAIL";
+	FundHabit.SUCCESS = "SUCCESS";
+	FundHabit.LINEAR = "LINEAR";
+	FundHabit.NOT_LINEAR = "NOT_LINEAR";
 
 	// Global variables:
 
 	FundHabitData.lan = "EN";
-	FundHabitData.mode = "LINEAR";
 
 	if (FundHabit.fileName.includes("ES")) {
 	   FundHabitData.lan = "ES";
 	}
 
+	FundHabitData.mode = FundHabit.LINEAR;
+	
 	if (FundHabitData.mode == FundHabit.LINEAR){
 		FundHabit.variations = FundHabit.linearPlaceholder.split(" ").map(Number);
 	} else {
@@ -50,11 +55,6 @@ $(document).ready(function() {
 	FundHabitData.datesLogged = [];
 
 	FundHabit.cookieName = "data1";
-
-	FundHabit.FAIL = "FAIL";
-	FundHabit.SUCCESS = "SUCCESS";
-	FundHabit.LINEAR = "LINEAR";
-	FundHabit.NOT_LINEAR = "NOT_LINEAR";
 
 	// Functions:
 
@@ -137,8 +137,13 @@ $(document).ready(function() {
 			$('#linear').attr("checked", false);
 		    $('#not_linear').attr("checked", true);
 		    $('.not_linear_info').show();
-		}    
-	    $('#txt_not_linear').attr("placeholder", FundHabit.notLinearPlaceholder);
+		    
+		    if (FundHabitData.relativeVariations.toString().replaceAll(",", " ") == FundHabit.notLinearPlaceholder){
+			    $('#txt_not_linear').attr("placeholder", FundHabit.notLinearPlaceholder);
+			} else {
+				$('#txt_not_linear').val(FundHabitData.relativeVariations.toString());
+			}
+		}
 
 	    greaterValue = FundHabitData.failValue > FundHabitData.successValue ? FundHabitData.failValue : FundHabitData.successValue;
 	    ratio = 1;
@@ -185,6 +190,20 @@ $(document).ready(function() {
 	    } else {
 	        showError(FundHabit.noCookiesToCleanString[FundHabitData.lan]);
 	    }
+	});
+
+	$('#lan_EN').click(function(){
+		FundHabitData.lan = "EN";
+		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+		saveData();
+		window.location = 'index';
+	});
+
+	$('#lan_ES').click(function(){
+		FundHabitData.lan = "ES";
+		FundHabitData.labelsXAxes = generateLabelsXAxes(FundHabitData.relativeVariations);
+		saveData();
+		window.location = 'index_ES';
 	});
 
 	$('div.fund#fail').click(function(){
@@ -249,12 +268,12 @@ $(document).ready(function() {
 
 	function showError(msg) {
 		$('footer.alert p').html(msg);
-		$('footer.alert').slideToggle(500).delay(1500).slideToggle(500);
+		$('footer.alert').slideToggle(500).delay(3500).slideToggle(500);
 	}
 
 	function showSuccess(msg) {
 		$('footer.ok p').html(msg);
-		$('footer.ok').slideToggle(500).delay(1500).slideToggle(500);
+		$('footer.ok').slideToggle(500).delay(2500).slideToggle(500);
 	}
     
     $("#help").click(function() {
