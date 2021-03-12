@@ -17,6 +17,20 @@ html, body {
 	margin-top: -.5%;
 }
 
+span#base, label, a#show-graph {
+	background: rgba(255,255,255,.45);
+	padding: 3px;
+	border-radius: 3px;
+}
+
+h1, h2 {
+	color: rgba(255,255,255,.8);
+}
+
+.fa-question-circle {
+	color: rgba(255,255,255,.8);
+}
+
 #content {
 	margin: 0;
 	padding: 0;
