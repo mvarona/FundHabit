@@ -20,13 +20,9 @@ html, body {
 #content {
 	margin: 0;
 	padding: 0;
-	background: linear-gradient(-75deg, #ffffff, #a2dbf0, #8cd3ec);
-	background-size: 200% 200%;
-	animation: gradient 15s ease 1;
-	transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    z-index: 0;
+	background-color: #cca8a3;
+	background-image: url("https://www.transparenttextures.com/patterns/brick-wall-dark.png");
+	z-index: 0;
 }
 
 @keyframes gradient {
@@ -113,7 +109,8 @@ hr {
 	display: inline-block;
 	font-size: 1.3em;
 	padding-top: 2%;
-	padding-bottom: 2%;
+	padding-bottom: 0;
+	background: rgba(240,240,240,.3);
 }
 
 #instructions div {
@@ -150,6 +147,7 @@ section div.circle {
 	border: solid 1px #ffffff;
 	border-radius: 100%;
 	position: absolute;
+	background: rgba(255,255,255,.3);
 }
 
 section input#base {

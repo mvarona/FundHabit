@@ -59,13 +59,14 @@ $(document).ready(function() {
 	// Utility variables:
 
 	FundHabit.cookieName = "fundhabit_cookie";
-	FundHabit.graphColor = "rgba(255, 99, 132, 0.2)";
+	FundHabit.graphColor = "rgba(255, 99, 132, 0.8)";	
 
 	// Functions:
 
 	function loadData(){
 		if ($.cookie(FundHabit.cookieName)) {
 			FundHabitData = JSON.parse($.cookie(FundHabit.cookieName));
+			console.log(FundHabitData);
 	    } else {
 	        $.cookie(FundHabit.cookieName, JSON.stringify(FundHabitData));
 	    }
@@ -167,7 +168,7 @@ $(document).ready(function() {
 	    if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.failValue){
 	    	
 	    	// Absolute value to avoid disappearance when negative amounts:
-	    	ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
+		    ratio = Math.abs(FundHabitData.successValue / FundHabitData.failValue);
 	    	
 	    	setTimeout(function(){
 	    		$('div.fund#success').css("width", standardSize * ratio + "em");
@@ -182,7 +183,7 @@ $(document).ready(function() {
 	    } else if (FundHabitData.failValue != FundHabitData.successValue && greaterValue == FundHabitData.successValue){
 	    	
 	    	// Absolute value to avoid disappearance when negative amounts:
-	    	ratio = Math.abs(FundHabitData.failValue / FundHabitData.successValue);
+		    ratio = Math.abs(FundHabitData.failValue / FundHabitData.successValue);
 	    	
 	    	setTimeout(function(){
 	    		$('div.fund#fail').css("width", standardSize * ratio + "em");
@@ -239,6 +240,8 @@ $(document).ready(function() {
 	});
 
 	$('div.fund#fail').click(function(){
+		FundHabitData = JSON.parse($.cookie(FundHabit.cookieName));
+
 		$('div.fund span.guide').hide();
 
 		today = moment().format('DD-MM-YYYY');
@@ -259,12 +262,14 @@ $(document).ready(function() {
 
 			loadUI();
 			saveData();
-
+		
 		// An action was already made today:
 		} else {
-
+			
 			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
-			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.SUCCESS){
+			if (FundHabitData.lastAction == FundHabit.FAIL){
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
+			} else {
 				var numDay;
 				if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
 					numDay = FundHabitData.datesLogged.length - 1;
@@ -282,13 +287,13 @@ $(document).ready(function() {
 				
 				loadUI();
 				saveData();
-			} else {
-				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
-			}
+			}			
 		}
 	});
 
 	$('div.fund#success').click(function(){
+		FundHabitData = JSON.parse($.cookie(FundHabit.cookieName));
+
 		$('div.fund span.guide').hide();
 
 		today = moment().format('DD-MM-YYYY');
@@ -304,11 +309,6 @@ $(document).ready(function() {
 			}
 
 			FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
-
-			if (FundHabitData.failValue < 0){
-				FundHabitData.failValue = 0.00001;
-			}
-
 			FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 			FundHabitData.lastAction = FundHabit.SUCCESS;
 
@@ -319,31 +319,27 @@ $(document).ready(function() {
 		} else {
 			
 			// If the action is the same as the button, don't allow it. Otherwise, undo last action:
-			if (FundHabitData.datesLogged.includes(today) && FundHabitData.lastAction == FundHabit.FAIL){
+			if (FundHabitData.lastAction == FundHabit.SUCCESS){
+				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
+			} else {
 				var numDay;
 				if (FundHabitData.datesLogged.length < FundHabitData.absoluteVariations.length){
 					numDay = FundHabitData.datesLogged.length - 1;
 				} else {
 					numDay = FundHabitData.absoluteVariations.length - 1;
 				}
-				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
-				
-				if (FundHabitData.failValue < 0){
-					FundHabitData.failValue = 0.00001;
-				}
 
+				FundHabitData.failValue -= FundHabitData.absoluteVariations[numDay];
 				FundHabitData.successValue += FundHabitData.absoluteVariations[numDay];
 				FundHabitData.lastAction = "";
 
 				// Remove date from dates log:
 				index = FundHabitData.datesLogged.indexOf(today);
 				if (index !== -1) FundHabitData.datesLogged.splice(index, 1);
-
+				
 				loadUI();
 				saveData();
-			} else {
-				showError(FundHabit.actionAlreadyRegisteredString[FundHabitData.lan]);
-			}
+			}			
 		}
 	});
 
